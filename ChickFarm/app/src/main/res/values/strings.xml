@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ChickFarm</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_camera">Camera</string>
+    <string name="menu_market">Market</string>
+    <string name="menu">menu</string>
+    <string name="swipe_to_open">swipe to open</string>
+    <string name="swipe_to_close">swipe to close</string>
+</resources>
