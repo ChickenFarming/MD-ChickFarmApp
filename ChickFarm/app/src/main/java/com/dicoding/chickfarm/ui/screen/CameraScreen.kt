@@ -17,7 +17,6 @@ fun CameraScreen(
     modifier: Modifier = Modifier
 ){
     Column(
-        modifier = Modifier.fillMaxSize().padding(60.dp)
 
 
     ){

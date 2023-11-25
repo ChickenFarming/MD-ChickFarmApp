@@ -6,4 +6,9 @@
     <string name="menu">menu</string>
     <string name="swipe_to_open">swipe to open</string>
     <string name="swipe_to_close">swipe to close</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="riwayat_menu">Riwayat</string>
+    <string name="maps_menu">Maps</string>
+    <string name="logout">Logout</string>
+    <string name="back_button">kembali</string>
 </resources>

@@ -1,21 +1,17 @@
 package com.dicoding.chickfarm.ui
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,39 +19,44 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.currentComposer
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.dicoding.chickfarm.ui.screen.map.MapViewModel
 import com.dicoding.chickfarm.R
 import com.dicoding.chickfarm.navigation.NavigationItem
 import com.dicoding.chickfarm.navigation.Screen
 import com.dicoding.chickfarm.ui.screen.CameraScreen
 import com.dicoding.chickfarm.ui.screen.HomeScreen
+import com.dicoding.chickfarm.ui.screen.map.MapScreen
 import com.dicoding.chickfarm.ui.screen.MarketScreen
 import kotlinx.coroutines.launch
 
+data class MenuItem(val title: String, val icon: ImageVector)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChickFarmApp(
+    viewModel: MapViewModel = viewModel(),
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
 ) {
@@ -64,56 +65,111 @@ fun ChickFarmApp(
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
+//    Item untuk navigationDrawer
+    val items = listOf(
+        MenuItem(
+            title = stringResource(R.string.riwayat_menu),
+            icon = Icons.Default.Home
+        ),
+        MenuItem(
+            title = stringResource(R.string.maps_menu),
+            icon = Icons.Default.Favorite
+        ),
+        MenuItem(
+            title = stringResource(R.string.logout),
+            icon = Icons.Default.AccountCircle
+        ),
+    )
+    val selectedItem = remember { mutableStateOf(items[0]) }
+
     Scaffold(
         bottomBar = {
-//            if(currentRoute != Screen.DetailMusik.route ){
-            BottomBar(navController)
-//            }
+            if (currentRoute == Screen.Home.route || currentRoute == Screen.Camera.route || currentRoute == Screen.Market.route) {
+                BottomBar(navController)
+            }
         },
         topBar = {
-            if (currentRoute == Screen.Home.route) {
-                MyTopBar(
-                    onMenuClick = {
-                        scope.launch {
-                            if (drawerState.isClosed) {
-                                drawerState.open()
-                            } else {
-                                drawerState.close()
+            when (currentRoute) {
+                Screen.Home.route -> {
+                    MyTopBar(
+                        onMenuClick = {
+                            scope.launch {
+                                if (drawerState.isClosed) {
+                                    drawerState.open()
+                                } else {
+                                    drawerState.close()
+                                }
                             }
                         }
-                    }
 
-                )
-            } else if (currentRoute == Screen.Camera.route || currentRoute == Screen.Market.route) {
-                TopAppBar(
-                    navigationIcon = {
-                    Icon(
-                        modifier = Modifier.padding(12.dp),
-                        imageVector = Icons.Default.Info,
-                        contentDescription = stringResource(R.string.menu)
                     )
-                },
-                    title = {
-                        if (currentRoute == Screen.Camera.route) {
-                            Text(stringResource(R.string.menu_camera))
-                        } else {
-                            Text(stringResource(R.string.menu_market))
-                        }
-                    }
+                }
 
-                )
+                Screen.Camera.route, Screen.Market.route, Screen.Maps.route -> {
+                    TopAppBar(
+                        navigationIcon = {
+                            when (currentRoute) {
+                                Screen.Camera.route, Screen.Market.route -> {
+                                    Icon(
+                                        modifier = Modifier.padding(12.dp),
+                                        imageVector = Icons.Default.Info,
+                                        contentDescription = stringResource(R.string.app_name)
+                                    )
+                                }
+                                Screen.Maps.route -> {
+
+                                IconButton(onClick = { }, ) {
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowBack,
+                                        contentDescription = stringResource(R.string.back_button)
+                                    )
+
+                                }
+                                }
+
+                            }
+                        },
+                        title = {
+                            when (currentRoute) {
+                                Screen.Camera.route -> Text(stringResource(R.string.menu_camera))
+                                Screen.Maps.route -> Text(stringResource(id = R.string.maps_menu))
+                                else -> Text(stringResource(R.string.menu_market))
+                            }
+                        }
+                    )
+                }
+                // Tambahkan kondisi lain jika diperlukan
+                else -> {
+                    // Kondisi default jika tidak ada yang cocok
+                }
             }
+
 
         },
         modifier = modifier
     ) { innerPadding ->
         ModalNavigationDrawer(
-            modifier = Modifier.padding(innerPadding),
+            modifier = modifier.padding(innerPadding),
             drawerState = drawerState,
             drawerContent = {
                 ModalDrawerSheet {
                     Spacer(Modifier.height(12.dp))
-                    Text(stringResource(R.string.app_name))
+                    items.forEach { item ->
+                        NavigationDrawerItem(
+                            icon = { Icon(item.icon, contentDescription = null) },
+                            label = { Text(item.title) },
+                            selected = item == selectedItem.value,
+                            onClick = {
+                                selectedItem.value = item
+                                if (item.title == "Maps") {
+                                    navController.navigate(Screen.Maps.route)
+
+                                }
+                            },
+                            modifier = Modifier.padding(horizontal = 12.dp)
+                        )
+                    }
                 }
             },
             gesturesEnabled = drawerState.isOpen,
@@ -121,8 +177,8 @@ fun ChickFarmApp(
                 NavHost(
                     navController = navController,
                     startDestination = Screen.Home.route,
-                    modifier = Modifier.padding(innerPadding)
-                ) {
+
+                    ) {
                     composable(Screen.Home.route) {
                         HomeScreen(
                         )
@@ -132,9 +188,18 @@ fun ChickFarmApp(
                         )
                     }
                     composable(Screen.Market.route) {
-                        MarketScreen(
-                        )
+
+                        MarketScreen()
+//                        MapsActivity()
                     }
+                    composable(Screen.Maps.route) {
+                        LaunchedEffect(drawerState.isOpen) {
+                            drawerState.close()
+                        }
+                        MapScreen(viewModel = viewModel)
+//                        MapsActivity()
+                    }
+
                 }
             }
         )

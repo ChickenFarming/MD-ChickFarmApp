@@ -16,21 +16,12 @@ import androidx.compose.ui.unit.sp
 fun MarketScreen(
     modifier: Modifier = Modifier
 ){
-    Column(
-        modifier = Modifier.fillMaxSize().padding(60.dp)
+    Text(
+        text = "Home",
+        style = MaterialTheme.typography.bodyLarge.copy(
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Medium,
 
-
-    ){
-
-        Text(
-            text = "Market",
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally).padding(5.dp),
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium,
-
-                ),
-        )
-    }
+            ),
+    )
 }
