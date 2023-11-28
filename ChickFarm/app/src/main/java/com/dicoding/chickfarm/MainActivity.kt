@@ -12,23 +12,35 @@ import com.dicoding.chickfarm.ui.ChickFarmApp
 import com.dicoding.chickfarm.ui.theme.ChickFarmTheme
 import android.Manifest
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.util.Log
-import androidx.activity.viewModels
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.dicoding.chickfarm.ui.screen.map.MapViewModel
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.model.RectangularBounds
-import com.google.android.libraries.places.api.net.FetchPlaceRequest
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
-import com.google.android.libraries.places.api.net.PlacesClient
+import java.io.File
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var outputDirectory: File
+    private lateinit var cameraExecutor: ExecutorService
+
+    private var shouldShowCamera: MutableState<Boolean> = mutableStateOf(false)
+
+    private val requestPermisiionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ){isGranted ->
+        if(isGranted){
+            Log.i("kilo", "Permission granted")
+            shouldShowCamera.value = true
+        }else{
+            Log.i("kilo", "Permission denied")
+        }
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -41,126 +53,61 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ChickFarmApp( context = this,  )
+                    if(shouldShowCamera.value){
+
+                    ChickFarmApp(outputDirectory = outputDirectory,
+                        executor = cameraExecutor ,
+                        onImageCaptured =::handleImageCaptur ,
+                        onError = {Log.e("kilo", "View error", it)},
+                        context = this,
+                    )
+                    }
+//                    ChickFarmApp( context = this,  )
                 }
+
             }
+        }
+
+        requestCameraPermission()
+        outputDirectory = getOutputDirectory()
+        cameraExecutor = Executors.newSingleThreadExecutor()
+    }
+
+    private fun requestCameraPermission(){
+        when{
+            ContextCompat.checkSelfPermission(
+                this, Manifest.permission.CAMERA
+            )== PackageManager.PERMISSION_GRANTED -> {
+                Log.i("kilo", "Permission previously granted")
+                shouldShowCamera.value = true
+            }
+
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                Manifest.permission.CAMERA
+            ) -> Log.i("kilo", "Show camera permissions dialog")
+
+            else -> requestPermisiionLauncher.launch(Manifest.permission.CAMERA)
         }
     }
 
-//
-//
-//
-//    private val requestPermissionLauncher =
-//        registerForActivityResult(
-//            ActivityResultContracts.RequestMultiplePermissions()
-//        ) { permissions ->
-//            when {
-//                permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true &&
-//                        permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true -> {
-//                    // Izin diberikan, dapatkan lokasi
-//                    getMyLastLocation()
-//                }
-//                else -> {
-//                    // Izin ditolak, berikan pesan atau ambil tindakan yang sesuai
-//                }
-//            }
-//        }
-//
-//    private fun checkAndRequestPermissions() {
-//        val permissions = arrayOf(
-//            Manifest.permission.ACCESS_FINE_LOCATION,
-//        )
-//
-//        when {
-//            ContextCompat.checkSelfPermission(
-//                this,
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            ) == PackageManager.PERMISSION_GRANTED &&
-//                    ContextCompat.checkSelfPermission(
-//                        this,
-//                        Manifest.permission.ACCESS_COARSE_LOCATION
-//                    ) == PackageManager.PERMISSION_GRANTED -> {
-//                // Izin sudah diberikan, dapatkan lokasi
-//                getMyLastLocation()
-//
-//            }
-//            else -> {
-//                // Izin belum diberikan, minta izin
-//                requestPermissionLauncher.launch(permissions)
-//            }
-//        }
-//    }
-//
-//
-//    private fun getMyLastLocation() {
-//        val fusedLocationClient: FusedLocationProviderClient =
-//            LocationServices.getFusedLocationProviderClient(this)
-//
-//        try {
-//            val locationTask = fusedLocationClient.lastLocation
-//            locationTask.addOnSuccessListener { location ->
-//                location?.let {
-//                    // Lokasi ditemukan, lakukan sesuatu dengan lokasi tersebut
-//                    val userLocation = LatLng(it.latitude, it.longitude)
-//                    viewModel.setUserLocation(userLocation)
-//
-//                    Log.d("MainActivity", "User location: $userLocation")
-//                    addMarkersWithKeyword("Food", userLocation)
-//
-//                }
-//            }
-//        } catch (e: SecurityException) {
-//            e.printStackTrace()
-//        }
-//    }
-//
-//
-//    private fun addMarkersWithKeyword(keyword: String, userLocation: LatLng) {
-//        // Buat permintaan Places API
-//        Places.initialize(applicationContext, "AIzaSyDNP8EFQK80AqDkw7RFqxldMcyPBfDgJT0")
-//        val placesClient: PlacesClient = Places.createClient(this)
-//
-//        // Buat permintaan untuk mencari tempat terdekat berdasarkan koordinat pengguna
-//        val request = FindAutocompletePredictionsRequest.builder()
-//            .setQuery(keyword)
-//            .setLocationBias(
-//                RectangularBounds.newInstance(
-//                    LatLng(userLocation.latitude - 0.1, userLocation.longitude - 0.1),
-//                    LatLng(userLocation.latitude + 0.1, userLocation.longitude + 0.1)
-//                )
-//            )
-//            .build()
-//
-//        placesClient.findAutocompletePredictions(request)
-//            .addOnSuccessListener { response ->
-//                // Pastikan ada hasil pencarian sebelum menambahkan marker
-//                if (response.autocompletePredictions.isNotEmpty()) {
-//                    val prediction = response.autocompletePredictions[0]
-//                    val placeId = prediction.placeId
-//
-//                    val placeRequest = FetchPlaceRequest.builder(placeId, listOf(Place.Field.LAT_LNG)).build()
-//
-//                    placesClient.fetchPlace(placeRequest)
-//                        .addOnSuccessListener { placeResponse ->
-//                            val place = placeResponse.place
-//                            val placeLatLng = place.latLng
-//
-//                            Log.d("MainActivity", "Adding marker for nearest place: $place")
-//                            // Tambahkan marker ke peta
-//                            viewModel.addMarker(MarkerOptions().position(placeLatLng).title(place.name))
-//                        }
-//                        .addOnFailureListener { exception ->
-//                            Log.e("MainActivity", "Failed to fetch place details: ${exception.message}")
-//                        }
-//                } else {
-//                    Log.d("MainActivity", "Tidak ada hasil pencarian tempat terdekat.")
-//                }
-//            }
-//            .addOnFailureListener { exception ->
-//                Log.e("MainActivity", "Failed to fetch autocomplete predictions: ${exception.message}")
-//            }
-//    }
-//
+    private fun handleImageCaptur(uri : Uri){
+        Log.i("kilo", "Image captured: $uri")
+        shouldShowCamera.value = false
+    }
+
+    private fun getOutputDirectory(): File{
+        val mediaDir = externalMediaDirs.firstOrNull()?.let{
+            File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
+
+        }
+        return if (mediaDir !=null && mediaDir.exists()) mediaDir else filesDir
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraExecutor.shutdown()
+    }
 
 
 }

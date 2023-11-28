@@ -22,6 +22,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -122,7 +123,7 @@ fun LoginScreen(
                         onClick = { isPasswordVisible = !isPasswordVisible }
                     ) {
                         Icon(
-                            imageVector =  Icons.Default.Star, modifier = Modifier.padding(8.dp)
+                            imageVector =  Icons.Default.RemoveRedEye, modifier = Modifier.padding(8.dp)
                             ,
                             contentDescription = if (isPasswordVisible) "Hide password" else "Show password"
                         )
