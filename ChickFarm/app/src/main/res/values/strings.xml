@@ -11,4 +11,7 @@
     <string name="maps_menu">Maps</string>
     <string name="logout">Logout</string>
     <string name="back_button">kembali</string>
+    <string name="login">Login</string>
+    <string name="title_activity_auth">AuthActivity</string>
+    <string name="my_location">Lokasi ku</string>
 </resources>

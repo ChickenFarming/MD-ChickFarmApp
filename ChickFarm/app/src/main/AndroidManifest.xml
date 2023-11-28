@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -15,7 +16,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChickFarm"
         tools:targetApi="31">
+        <activity
+            android:name=".AuthActivity"
+            android:exported="true"
+            android:label="@string/title_activity_auth"
+            android:theme="@style/Theme.ChickFarm">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -29,25 +41,19 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDNP8EFQK80AqDkw7RFqxldMcyPBfDgJT0" />
-
-<!--        <activity-->
-<!--            android:name=".ui.screen.MapsActivity"-->
-<!--            android:exported="true"-->
-<!--            android:theme="@style/Theme.AppCompat"-->
-<!--            android:label="@string/title_activity_maps" >-->
-<!--  -->
-<!--        </activity>-->
+            android:value="AIzaSyDNP8EFQK80AqDkw7RFqxldMcyPBfDgJT0" /> <!-- <activity -->
+        <!-- android:name=".ui.screen.MapsActivity" -->
+        <!-- android:exported="true" -->
+        <!-- android:theme="@style/Theme.AppCompat" -->
+        <!-- android:label="@string/title_activity_maps" > -->
+        <!--  -->
+        <!-- </activity> -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.ChickFarm">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

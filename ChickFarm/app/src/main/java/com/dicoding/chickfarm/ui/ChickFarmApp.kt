@@ -1,5 +1,7 @@
 package com.dicoding.chickfarm.ui
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -41,6 +43,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.dicoding.chickfarm.AuthActivity
 import com.dicoding.chickfarm.ui.screen.map.MapViewModel
 import com.dicoding.chickfarm.R
 import com.dicoding.chickfarm.navigation.NavigationItem
@@ -49,6 +52,9 @@ import com.dicoding.chickfarm.ui.screen.CameraScreen
 import com.dicoding.chickfarm.ui.screen.HomeScreen
 import com.dicoding.chickfarm.ui.screen.map.MapScreen
 import com.dicoding.chickfarm.ui.screen.MarketScreen
+import com.dicoding.chickfarm.ui.screen.auth.LoginScreen
+import com.dicoding.chickfarm.ui.screen.auth.RegistrationScreen
+import com.dicoding.chickfarm.ui.screen.utils.Utils
 import kotlinx.coroutines.launch
 
 data class MenuItem(val title: String, val icon: ImageVector)
@@ -56,9 +62,10 @@ data class MenuItem(val title: String, val icon: ImageVector)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChickFarmApp(
-    viewModel: MapViewModel = viewModel(),
+
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+    context : Context,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -84,11 +91,7 @@ fun ChickFarmApp(
     val selectedItem = remember { mutableStateOf(items[0]) }
 
     Scaffold(
-        bottomBar = {
-            if (currentRoute == Screen.Home.route || currentRoute == Screen.Camera.route || currentRoute == Screen.Market.route) {
-                BottomBar(navController)
-            }
-        },
+
         topBar = {
             when (currentRoute) {
                 Screen.Home.route -> {
@@ -110,22 +113,23 @@ fun ChickFarmApp(
                     TopAppBar(
                         navigationIcon = {
                             when (currentRoute) {
-                                Screen.Camera.route, Screen.Market.route -> {
+                                Screen.Camera.route, Screen.Market.route-> {
                                     Icon(
                                         modifier = Modifier.padding(12.dp),
                                         imageVector = Icons.Default.Info,
                                         contentDescription = stringResource(R.string.app_name)
                                     )
                                 }
+
                                 Screen.Maps.route -> {
 
-                                IconButton(onClick = { }, ) {
-                                    Icon(
-                                        imageVector = Icons.Default.ArrowBack,
-                                        contentDescription = stringResource(R.string.back_button)
-                                    )
+                                    IconButton(onClick = { }) {
+                                        Icon(
+                                            imageVector = Icons.Default.ArrowBack,
+                                            contentDescription = stringResource(R.string.back_button)
+                                        )
 
-                                }
+                                    }
                                 }
 
                             }
@@ -147,6 +151,13 @@ fun ChickFarmApp(
 
 
         },
+        bottomBar = {
+            if (currentRoute == Screen.Home.route || currentRoute == Screen.Camera.route || currentRoute == Screen.Market.route) {
+                if (drawerState.isClosed) {
+                    BottomBar(navController)
+                }
+            }
+        },
         modifier = modifier
     ) { innerPadding ->
         ModalNavigationDrawer(
@@ -162,10 +173,18 @@ fun ChickFarmApp(
                             selected = item == selectedItem.value,
                             onClick = {
                                 selectedItem.value = item
-                                if (item.title == "Maps") {
-                                    navController.navigate(Screen.Maps.route)
+                                when(item.title){
+                                    "Maps" -> navController.navigate(Screen.Maps.route)
+                                    "Logout" -> {
+                                        val intent = Intent(context, AuthActivity::class.java)
+                                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                        context.startActivity(intent)
+                                        Utils.setLoginStatus(context, false)
+
+                                    }
 
                                 }
+
                             },
                             modifier = Modifier.padding(horizontal = 12.dp)
                         )
@@ -174,6 +193,7 @@ fun ChickFarmApp(
             },
             gesturesEnabled = drawerState.isOpen,
             content = {
+
                 NavHost(
                     navController = navController,
                     startDestination = Screen.Home.route,
@@ -196,7 +216,7 @@ fun ChickFarmApp(
                         LaunchedEffect(drawerState.isOpen) {
                             drawerState.close()
                         }
-                        MapScreen(viewModel = viewModel)
+                        MapScreen( context = context)
 //                        MapsActivity()
                     }
 
