@@ -83,8 +83,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     implementation ("androidx.navigation:navigation-compose:2.6.0")
+//    Map
     implementation ("com.google.maps.android:maps-compose:2.11.4")
-
     implementation("com.google.android.gms:play-services-location:18.0.0")
     implementation ("com.google.android.gms:play-services-tasks:18.0.0")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.0")
@@ -101,5 +101,5 @@ dependencies {
     implementation ("androidx.compose.material:material-icons-extended:$compose_version")
 
     // Coil
-    implementation ("io.coil-kt:coil-compose:1.4.0")
+    implementation ("io.coil-kt:coil-compose:2.2.0")
 }

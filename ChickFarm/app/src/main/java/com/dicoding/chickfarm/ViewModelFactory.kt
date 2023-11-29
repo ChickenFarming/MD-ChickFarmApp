@@ -1,19 +1,18 @@
 package com.dicoding.chickfarm
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.dicoding.chickfarm.ui.screen.map.MapViewModel
+import com.dicoding.chickfarm.ui.screen.market.MarketViewModel
 
-//class ViewModelFactory(val context: Context) :
-//    ViewModelProvider.NewInstanceFactory() {
-//    @Suppress("UNCHECKED_CAST")
-//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//
-//        if (modelClass.isAssignableFrom(MapViewModel::class.java)) {
-//            return MapViewModel(context = context) as T
-//        }
-//
-//        throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
-//    }
-//}
+class ViewModelFactory(private val repository: Repository) :
+    ViewModelProvider.NewInstanceFactory() {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+
+        if (modelClass.isAssignableFrom(MarketViewModel::class.java)) {
+            return MarketViewModel(repository) as T
+        }
+
+        throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
+    }
+}

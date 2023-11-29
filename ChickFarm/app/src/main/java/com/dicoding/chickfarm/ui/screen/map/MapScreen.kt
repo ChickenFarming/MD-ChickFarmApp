@@ -2,12 +2,12 @@ package com.dicoding.chickfarm.ui.screen.map
 
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.ColorFilter
 import android.widget.Toast
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -23,6 +23,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.GoogleMap
@@ -30,6 +35,8 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.dicoding.chickfarm.R
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.maps.android.compose.CameraPositionState
 
 @Composable
@@ -59,7 +66,6 @@ fun MapScreen(
         }
     }
 
-
     DisposableEffect(conditionState) {
         viewModel.init(context, requestPermissionLauncher)
         viewModel.checkAndRequestPermissions()
@@ -81,14 +87,17 @@ fun MapScreen(
             Marker(
                 state = MarkerState(viewModel.userLocation.value),
                 title = stringResource(id = R.string.my_location),
+                icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)
             )
 //
-//            viewModel.markers.value.forEach { markerOptions ->
-//                Marker(
-//                    state = MarkerState(position = markerOptions.position),
-//                    title = markerOptions.title,
-//                )
-//            }
+            viewModel.markerList.forEach { markerOptions ->
+                Marker(
+                    state = MarkerState(position = markerOptions.markers.position),
+                    title = markerOptions.markers.title,
+                    icon = BitmapDescriptorFactory.fromResource(R.drawable.rooster)
+
+                )
+            }
         }
         Box(
             modifier = Modifier

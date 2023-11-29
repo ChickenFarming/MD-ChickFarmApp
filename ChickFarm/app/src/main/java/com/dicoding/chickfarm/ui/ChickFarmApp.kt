@@ -5,16 +5,13 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.camera.core.ImageCaptureException
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
@@ -22,7 +19,6 @@ import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -47,7 +43,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Yellow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -66,7 +61,7 @@ import com.dicoding.chickfarm.navigation.Screen
 import com.dicoding.chickfarm.ui.screen.CameraScreen
 import com.dicoding.chickfarm.ui.screen.HomeScreen
 import com.dicoding.chickfarm.ui.screen.map.MapScreen
-import com.dicoding.chickfarm.ui.screen.MarketScreen
+import com.dicoding.chickfarm.ui.screen.market.MarketScreen
 import com.dicoding.chickfarm.ui.screen.utils.Utils
 import kotlinx.coroutines.launch
 import java.io.File
