@@ -18,6 +18,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -77,7 +78,7 @@ fun RegistrationScreen(
                     ),
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically
         ){
@@ -130,7 +131,7 @@ fun RegistrationScreen(
                         onClick = { isPasswordVisible = !isPasswordVisible }
                     ) {
                         Icon(
-                            imageVector =  Icons.Default.Star, modifier = Modifier.padding(8.dp)
+                            imageVector =  Icons.Default.RemoveRedEye, modifier = Modifier.padding(8.dp)
                             ,
                             contentDescription = if (isPasswordVisible) "Hide password" else "Show password"
                         )
@@ -143,7 +144,14 @@ fun RegistrationScreen(
         Button(
             onClick = {
 //                nanti disini akan membuat pengecekan login
-                navController.navigate(Screen.Login.route)
+                navController.navigate(Screen.Login.route){
+                    popUpTo(Screen.Login.route) {
+                        // Termasuk layar Login
+                        inclusive = true
+                    }
+                    // Atur agar layar Login menjadi root
+                    launchSingleTop = true
+                }
             },
             modifier = Modifier
                 .width(200.dp)

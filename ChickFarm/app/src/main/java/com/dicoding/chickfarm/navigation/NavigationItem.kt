@@ -9,9 +9,12 @@ data class NavigationItem(
 )
 
 sealed class Screen(val route: String) {
+//    Main
     object Home : Screen("home")
     object Camera : Screen("camera")
     object Market : Screen("market")
+
+//Auth
     object Maps : Screen("maps")
     object Login: Screen("login")
     object Signup: Screen("signup")

@@ -2,10 +2,13 @@ package com.dicoding.chickfarm.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+//hijau light
+val hijau80 = Color(0xFF9BD182)
+val hijau40= Color(0xFFCFE9C2)
+val gray40 = Color(0xFFEBEBEB)
+
+//Coklat Dark
+val coklat = Color(0xFF5D4F40)
+val coklat2 = Color(0xFF826F59)
+val darkGray = Color(0xFF3B3C3C)

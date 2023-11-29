@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -92,7 +93,7 @@ fun MapScreen(
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(16.dp)
+                .padding(18.dp)
         ) {
             Button(
                 onClick = {
@@ -104,12 +105,12 @@ fun MapScreen(
 //                    }
                 },
                 modifier = Modifier
-                    .width(200.dp)
-                    .height(50.dp)
+                    .width(90.dp)
+                    .height(40.dp)
                     ,
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Text("Fokus ke lokasi ku")
+                Text("Fokus")
             }
         }
     }
