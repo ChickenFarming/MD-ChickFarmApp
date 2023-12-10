@@ -8,17 +8,23 @@ class Repository {
 
     private val productList = mutableListOf<ListProduk>()
 
-    init{
-        if(productList.isEmpty()){
-            ProductData.product.forEach{
-                productList.add(ListProduk(it,))
+    init {
+        if (productList.isEmpty()) {
+            ProductData.product.forEach {
+                productList.add(ListProduk(it))
             }
         }
     }
 
-fun getAllProduct(): List<Produk> {
-    return ProductData.product
-}
+    fun getAllProduct(): List<Produk> {
+        return ProductData.product
+    }
+
+    fun getProductyId(productId: Long): ListProduk {
+        return productList.first {
+            it.produk.id == productId
+        }
+    }
 
 
     companion object {

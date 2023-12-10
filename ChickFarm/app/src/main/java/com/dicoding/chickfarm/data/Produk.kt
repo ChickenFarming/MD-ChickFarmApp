@@ -5,6 +5,7 @@ data class Produk(
     val namaToko: String,
     val namaProduk: String,
     val harga: String,
-    val photoUrl: String,
+    val image: Int,
+    val lokasi: String,
     val desc : String,
 )

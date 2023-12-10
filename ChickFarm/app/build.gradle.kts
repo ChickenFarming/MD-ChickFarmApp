@@ -71,14 +71,11 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.android.libraries.places:places:3.3.0")
-    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    implementation("androidx.camera:camera-lifecycle:1.3.0")
+    implementation("com.google.android.material:material:1.10.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
@@ -90,10 +87,11 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.0")
 
 //    Camera
-    implementation ("androidx.camera:camera-core:1.1.0-alpha01")
-    implementation ("androidx.camera:camera-camera2:1.1.0-alpha01")
-    implementation ("androidx.camera:camera-lifecycle:1.1.0-alpha01")
-    implementation ("androidx.camera:camera-view:1.0.0-alpha38")
+//
+    implementation("androidx.camera:camera-lifecycle:1.3.0")
+    implementation ("androidx.camera:camera-core:1.3.0")
+    implementation ("androidx.camera:camera-camera2:1.3.0")
+    implementation ("androidx.camera:camera-view:1.3.0")
     //Permissions
     implementation("com.google.accompanist:accompanist-permissions:0.18.0")
 

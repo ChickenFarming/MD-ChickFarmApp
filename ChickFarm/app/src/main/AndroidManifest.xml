@@ -4,8 +4,11 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-feature android:name="android.hardware.camera.any"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <uses-feature android:name="android.hardware.camera.any" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -17,17 +20,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChickFarm"
         tools:targetApi="31">
-
-
-
+        <activity
+            android:name=".ui.screen.camera.TakeImageActivity"
+            android:theme="@style/Theme.AppCompat"/>
+        <activity
+            android:name=".ui.screen.camera.CameraActivity"
+            android:theme="@style/Theme.AppCompat" />
         <activity
             android:name=".AuthActivity"
             android:exported="true"
             android:label="@string/title_activity_auth"
-            android:theme="@style/Theme.ChickFarm">
-
-
-        </activity>
+            android:theme="@style/Theme.ChickFarm" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -58,7 +61,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
     </application>
 

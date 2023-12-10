@@ -25,10 +25,20 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = hijau80,
-    secondary = hijau40 ,
-    secondaryContainer = hijau40,
-    surface = gray40
+//    primary = hijau80,
+//    secondary = hijau40 ,
+//    secondaryContainer = hijau40,
+//    surface = gray40
+    primary = coklat,
+    secondary = coklat2 ,
+    secondaryContainer = coklat2,
+    onSecondaryContainer =Color.White,
+//    onSurface = Color.White,
+    surface = Color.White,
+//    onSurfaceVariant = Color.White /* Untuk Icon */
+
+//    onSurface = Color.White,
+//    surfaceTint = Color.White
 
 )
 

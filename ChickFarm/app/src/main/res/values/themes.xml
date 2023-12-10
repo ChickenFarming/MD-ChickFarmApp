@@ -2,4 +2,8 @@
 <resources>
 
     <style name="Theme.ChickFarm" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="RoundedButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/button_rounded</item>
+    </style>
 </resources>

@@ -1,5 +1,7 @@
 package com.dicoding.chickfarm.data
 
+import com.dicoding.chickfarm.R
+
 object ProductData{
     val product = listOf(
         Produk(
@@ -7,7 +9,8 @@ object ProductData{
             "Toko Fajar",
             "produk 1",
             "Rp. 10.000",
-            "https://i.pinimg.com/564x/66/78/88/6678880e40d74fcd2bfbc863dd0a7da2.jpg",
+            R.drawable.ic_launcher_foreground,
+            "Makassar",
             "egawgawg"
         ),
         Produk(
@@ -15,7 +18,9 @@ object ProductData{
             "Toko Luna",
             "produk 2",
             "Rp. 10.000",
-            "https://i.pinimg.com/564x/66/78/88/6678880e40d74fcd2bfbc863dd0a7da2.jpg",
+            R.drawable.ic_launcher_foreground,
+            "Makassar",
+
             "egawgawg"
         ),
         Produk(
@@ -23,8 +28,8 @@ object ProductData{
 
             "produk 3",
             "Rp. 10.000",
-
-            "https://i.pinimg.com/564x/66/78/88/6678880e40d74fcd2bfbc863dd0a7da2.jpg",
+            R.drawable.ic_launcher_foreground,
+            "Makassar",
             "egawgawg"
         ),
         Produk(
@@ -32,7 +37,8 @@ object ProductData{
             "Toko Afika",
             "produk 4",
             "Rp. 10.000",
-            "https://i.pinimg.com/564x/66/78/88/6678880e40d74fcd2bfbc863dd0a7da2.jpg",
+            R.drawable.ic_launcher_foreground,
+            "Makassar",
             "egawgawg"
         ),
         Produk(
@@ -41,7 +47,8 @@ object ProductData{
             "produk 5",
             "Rp. 10.000",
 
-            "https://i.pinimg.com/564x/66/78/88/6678880e40d74fcd2bfbc863dd0a7da2.jpg",
+            R.drawable.ic_launcher_foreground,
+            "Makassar",
             "egawgawg"
         ),
         Produk(
@@ -49,7 +56,9 @@ object ProductData{
             "Toko Iqram",
             "produk 6",
             "Rp. 10.000",
-            "https://i.pinimg.com/564x/66/78/88/6678880e40d74fcd2bfbc863dd0a7da2.jpg",
+            R.drawable.ic_launcher_foreground,
+            "Makassar",
+
             "egawgawg"
         ),
     )

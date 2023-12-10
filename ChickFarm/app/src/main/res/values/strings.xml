@@ -14,4 +14,13 @@
     <string name="login">Login</string>
     <string name="title_activity_auth">AuthActivity</string>
     <string name="my_location">Lokasi ku</string>
+    <string name="kebutuhan_ternak_ayam">Kebutuhan Ternak</string>
+    <string name="berkualitas">Berkualitas</string>
+    <string name="terpercaya">Terpercaya</string>
+    <string name="error_picture">Error Picture</string>
+    <string name="camera_x">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="menu_disease_detector">Disease Detector</string>
+    <string name="deteksi_penyakit">Deteksi Penyakit</string>
+    <string name="gallery_or_camera">Gunakan Kamera atau Gambar dari Galeri</string>
 </resources>

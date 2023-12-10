@@ -2,19 +2,15 @@ package com.dicoding.chickfarm.ui
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.util.Log
-import androidx.camera.core.ImageCaptureException
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Menu
@@ -50,22 +46,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.dicoding.chickfarm.AuthActivity
 import com.dicoding.chickfarm.R
 import com.dicoding.chickfarm.navigation.NavigationItem
 import com.dicoding.chickfarm.navigation.Screen
-import com.dicoding.chickfarm.ui.screen.CameraScreen
 import com.dicoding.chickfarm.ui.screen.HomeScreen
+import com.dicoding.chickfarm.ui.screen.camera.DiseaseDetectorScreen
 import com.dicoding.chickfarm.ui.screen.map.MapScreen
 import com.dicoding.chickfarm.ui.screen.market.MarketScreen
+import com.dicoding.chickfarm.ui.screen.market.detail.DetailProductScreen
 import com.dicoding.chickfarm.ui.screen.utils.Utils
 import kotlinx.coroutines.launch
-import java.io.File
-import java.util.concurrent.Executor
 
 data class MenuItem(val title: String, val icon: ImageVector)
 
@@ -76,10 +73,6 @@ fun ChickFarmApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     context: Context,
-    outputDirectory: File,
-    executor: Executor,
-    onImageCaptured: (Uri) -> Unit,
-    onError: (ImageCaptureException) -> Unit
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -137,41 +130,25 @@ fun ChickFarmApp(
                         )
                     }
 
-                    Screen.Camera.route, Screen.Market.route, Screen.Maps.route -> {
+                    Screen.DiseaseDetector.route, Screen.Market.route, Screen.Maps.route -> {
                         TopAppBar(
                             navigationIcon = {
-                                when (currentRoute) {
-                                    Screen.Camera.route, Screen.Market.route -> {
-                                        Icon(
-                                            modifier = Modifier.padding(12.dp),
-                                            imageVector = Icons.Default.Info,
-                                            contentDescription = stringResource(R.string.app_name)
-                                        )
-                                    }
-
-                                    Screen.Maps.route -> {
-
                                         IconButton(onClick = { }) {
                                             Icon(
-                                                imageVector = Icons.Default.ArrowBack,
+                                                imageVector = Icons.Default.ArrowBackIos,
                                                 contentDescription = stringResource(R.string.back_button),
-                                                tint = Color.White
                                             )
 
                                         }
-                                    }
-
-                                }
                             },
                             title = {
                                 when (currentRoute) {
-                                    Screen.Camera.route -> Text(stringResource(R.string.menu_camera), color = Color.White)
-                                    Screen.Maps.route -> Text(stringResource(id = R.string.maps_menu),color = Color.White)
-                                    Screen.Market.route -> Text(stringResource(id = R.string.menu_market),color = Color.White)
+                                    Screen.Maps.route -> Text(stringResource(id = R.string.maps_menu))
+                                    Screen.Market.route -> Text(stringResource(id = R.string.menu_market),)
                                     else -> {}
                                 }
                             },
-                            colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.primary)
+                            colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.background)
                         )
                     }
                     // Tambahkan kondisi lain jika diperlukan
@@ -186,7 +163,7 @@ fun ChickFarmApp(
 //            if (currentRoute == Screen.Home.route || currentRoute == Screen.Camera.route || currentRoute == Screen.Market.route) {
 //                if (drawerState.isClosed) {
                 if (currentRoute != Screen.Maps.route) {
-                    BottomBar(navController)
+                    BottomBar(navController, )
 
                 }
 //                }
@@ -243,18 +220,33 @@ fun ChickFarmApp(
                             HomeScreen(
                             )
                         }
-                        composable(Screen.Camera.route) {
-                            CameraScreen(
-                                outputDirectory = outputDirectory,
-                                executor = executor,
-                                onImageCaptured = onImageCaptured,
-                                onError = { Log.e("kilo", "View error", it) },
-                            )
+                        composable(Screen.DiseaseDetector.route) {
+                          DiseaseDetectorScreen(context = context, modifier)
                         }
+                        // Inside your navigation graph
+//                        composable("detail_screen") { backStackEntry ->
+//                            val imageUri = Uri.parse(backStackEntry.arguments?.getString("imageUri"))
+//                            DetailImageScreen("hahaha")
+//                        }
+
                         composable(Screen.Market.route) {
 
-                            MarketScreen()
+                            MarketScreen(navigateToPayment ={productId ->
+                                    navController.navigate(Screen.DetailProduct.createRoute(productId))
+                            } )
 //                        MapsActivity()
+                        }
+                        composable(route  = Screen.DetailProduct.route,
+                            arguments = listOf(navArgument("productId"){ type = NavType.LongType})
+                            ){
+
+                            val id = it.arguments?.getLong("productId") ?: -1L
+                            DetailProductScreen(
+                                productId = id ,
+                               )
+
+
+
                         }
                         composable(Screen.Maps.route) {
                             LaunchedEffect(drawerState.isOpen) {
@@ -328,7 +320,7 @@ private fun BottomBar(
             NavigationItem(
                 title = stringResource(R.string.menu_camera),
                 icon = Icons.Default.CameraAlt,
-                screen = Screen.Camera
+                screen = Screen.DiseaseDetector
             ),
             NavigationItem(
                 title = stringResource(R.string.menu_market),
