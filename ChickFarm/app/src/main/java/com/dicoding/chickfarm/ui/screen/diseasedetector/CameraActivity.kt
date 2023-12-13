@@ -1,6 +1,5 @@
-package com.dicoding.chickfarm.ui.screen.camera
+package com.dicoding.chickfarm.ui.screen.diseasedetector
 
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -20,7 +19,6 @@ import androidx.core.content.ContextCompat
 import com.dicoding.chickfarm.R
 import com.dicoding.chickfarm.databinding.ActivityCameraBinding
 import com.dicoding.chickfarm.ui.screen.utils.Utils
-import java.io.File
 
 class CameraActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCameraBinding

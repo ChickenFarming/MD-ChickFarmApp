@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.screen.camera.TakeImageActivity">
-
+    tools:context=".ui.screen.diseasedetector.TakeImageActivity">
 
     <ImageView
         android:id="@+id/previewImageView"
@@ -20,14 +19,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_place_holder" />
+        app:srcCompat="@drawable/kotoran" />
 
     <Button
         android:id="@+id/cameraXButton"
         style="@style/RoundedButton"
-        android:layout_width="180dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="20dp"
         android:backgroundTint="@color/quantum_grey500"
         android:labelFor="@id/cameraXButton"
@@ -35,24 +34,24 @@
         android:text="@string/camera_x"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/detectionButton"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/galleryButton"
+        />
 
     <Button
         android:id="@+id/galleryButton"
         style="@style/RoundedButton"
-        android:layout_width="180dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="20dp"
         android:backgroundTint="@color/quantum_grey500"
-        android:elevation="2dp"
         android:padding="20dp"
         android:scaleType="fitCenter"
         android:text="@string/gallery"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/detectionButton"
         app:layout_constraintEnd_toStartOf="@id/cameraXButton"
-        app:layout_constraintHorizontal_bias="0.296"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button

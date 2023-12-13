@@ -42,6 +42,7 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        mlModelBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = compose_version
@@ -72,12 +73,18 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.android.libraries.places:places:3.3.0")
     implementation("com.google.android.material:material:1.10.0")
-    testImplementation("junit:junit:4.13.2")
+    implementation("org.tensorflow:tensorflow-lite-support:0.1.0")
+    implementation("org.tensorflow:tensorflow-lite-metadata:0.1.0")
+    androidTestImplementation ("androidx.compose.ui:ui-test-junit4:1.0.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+//    Activity
+
+
 
     implementation ("androidx.navigation:navigation-compose:2.6.0")
 //    Map
@@ -100,4 +107,9 @@ dependencies {
 
     // Coil
     implementation ("io.coil-kt:coil-compose:2.2.0")
+
+//    Model
+    implementation ("org.tensorflow:tensorflow-lite:2.8.0")
+
+
 }

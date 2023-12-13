@@ -57,7 +57,7 @@ import com.dicoding.chickfarm.R
 import com.dicoding.chickfarm.navigation.NavigationItem
 import com.dicoding.chickfarm.navigation.Screen
 import com.dicoding.chickfarm.ui.screen.HomeScreen
-import com.dicoding.chickfarm.ui.screen.camera.DiseaseDetectorScreen
+import com.dicoding.chickfarm.ui.screen.diseasedetector.DiseaseDetectorScreen
 import com.dicoding.chickfarm.ui.screen.map.MapScreen
 import com.dicoding.chickfarm.ui.screen.market.MarketScreen
 import com.dicoding.chickfarm.ui.screen.market.detail.DetailProductScreen
@@ -223,11 +223,6 @@ fun ChickFarmApp(
                         composable(Screen.DiseaseDetector.route) {
                           DiseaseDetectorScreen(context = context, modifier)
                         }
-                        // Inside your navigation graph
-//                        composable("detail_screen") { backStackEntry ->
-//                            val imageUri = Uri.parse(backStackEntry.arguments?.getString("imageUri"))
-//                            DetailImageScreen("hahaha")
-//                        }
 
                         composable(Screen.Market.route) {
 

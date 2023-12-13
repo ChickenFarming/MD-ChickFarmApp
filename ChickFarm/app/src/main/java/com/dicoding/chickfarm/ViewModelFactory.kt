@@ -17,7 +17,6 @@ class ViewModelFactory(private val repository: Repository) :
             return DetailProductViewModel(repository) as T
         }
 
-
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     }
 }

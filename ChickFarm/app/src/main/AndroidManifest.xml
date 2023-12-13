@@ -21,10 +21,10 @@
         android:theme="@style/Theme.ChickFarm"
         tools:targetApi="31">
         <activity
-            android:name=".ui.screen.camera.TakeImageActivity"
+            android:name=".ui.screen.diseasedetector.TakeImageActivity"
             android:theme="@style/Theme.AppCompat"/>
         <activity
-            android:name=".ui.screen.camera.CameraActivity"
+            android:name=".ui.screen.diseasedetector.CameraActivity"
             android:theme="@style/Theme.AppCompat" />
         <activity
             android:name=".AuthActivity"

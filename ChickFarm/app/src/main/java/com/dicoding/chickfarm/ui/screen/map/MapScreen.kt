@@ -2,12 +2,8 @@ package com.dicoding.chickfarm.ui.screen.map
 
 
 import android.content.Context
-import android.graphics.ColorFilter
-import android.widget.Toast
-
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,17 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.GoogleMap
@@ -35,7 +25,6 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.dicoding.chickfarm.R
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.maps.android.compose.CameraPositionState
 
@@ -56,7 +45,6 @@ fun MapScreen(
         when {
             permissions[android.Manifest.permission.ACCESS_FINE_LOCATION] == true -> {
                 // Izin diberikan, dapatkan lokasi
-                Toast.makeText(context, "fgAGA", Toast.LENGTH_SHORT).show()
                 viewModel.startLocationUpdates()
             }
 
@@ -107,11 +95,7 @@ fun MapScreen(
             Button(
                 onClick = {
                           viewModel.moveCameraToLocation(viewModel.userLocation.value)
-//                    if (conditionState) {
-//                        conditionState = false
-//                    } else {
-//                        conditionState = true
-//                    }
+
                 },
                 modifier = Modifier
                     .width(90.dp)

@@ -1,30 +1,26 @@
-package com.dicoding.chickfarm.ui.screen.camera
+package com.dicoding.chickfarm.ui.screen.diseasedetector
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.lifecycle.lifecycleScope
-import com.dicoding.chickfarm.R
+import androidx.lifecycle.ViewModelProvider
 import com.dicoding.chickfarm.databinding.ActivityTakeImageBinding
-import com.dicoding.chickfarm.ui.screen.camera.CameraActivity.Companion.CAMERAX_RESULT
-import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
+import com.dicoding.chickfarm.modelML.DiseaseDetector
+import com.dicoding.chickfarm.ui.screen.diseasedetector.CameraActivity.Companion.CAMERAX_RESULT
 
 class TakeImageActivity : AppCompatActivity() {
+
+    private lateinit var model: DiseaseDetector
+
+    private lateinit var takeImageViewModel: TakeImageViewModel
+
     private lateinit var binding: ActivityTakeImageBinding
 
     private var currentImageUri: Uri? = null
@@ -40,23 +36,21 @@ class TakeImageActivity : AppCompatActivity() {
             }
         }
 
-    private fun allPermissionsGranted() =
-        ContextCompat.checkSelfPermission(
-            this,
-            REQUIRED_PERMISSION
-        ) == PackageManager.PERMISSION_GRANTED
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTakeImageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         supportActionBar?.hide()
+//      init model ML
+        model = DiseaseDetector(this, "model.tflite")
 
-        if (!allPermissionsGranted()) {
-            requestPermissionLauncher.launch(REQUIRED_PERMISSION)
+        takeImageViewModel = ViewModelProvider(this).get(TakeImageViewModel::class.java)
+        takeImageViewModel.init(this)
+
+        if (!takeImageViewModel.allPermissionsGranted()) {
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
-
 
         binding.galleryButton.setOnClickListener {
             startGallery()
@@ -67,13 +61,15 @@ class TakeImageActivity : AppCompatActivity() {
         }
 
         binding.detectionButton.setOnClickListener {
+            detection()
 
-            }
         }
+    }
 
     private fun startGallery() {
         launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
+
     private val launcherGallery = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
@@ -84,10 +80,12 @@ class TakeImageActivity : AppCompatActivity() {
             Log.d("Photo Picker", "No media selected")
         }
     }
+
     private fun startCameraX() {
         val intent = Intent(this, CameraActivity::class.java)
         launcherIntentCameraX.launch(intent)
     }
+
     private val launcherIntentCameraX = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
@@ -96,6 +94,7 @@ class TakeImageActivity : AppCompatActivity() {
             showImage()
         }
     }
+
     private fun showImage() {
         currentImageUri?.let {
             Log.d("Image URI", "showImage: $it")
@@ -103,12 +102,31 @@ class TakeImageActivity : AppCompatActivity() {
         }
     }
 
-    companion object {
-        private const val REQUIRED_PERMISSION = Manifest.permission.CAMERA
+    fun detection() {
+        currentImageUri?.let { uri ->
+            // Konversi URI ke Bitmap
+            val bitmap = takeImageViewModel.uriToBitmap(contentResolver, uri)
+            // Ubah ukuran Bitmap ke dimensi yang diinginkan (224x224)
+            val resizedBitmap = bitmap?.let { takeImageViewModel.resizeBitmap(it, 224, 224) }
+            // Konversi Bitmap ke array dengan dimensi (224, 224, 3)
+            val inputArray = resizedBitmap?.let { takeImageViewModel.bitmapToArray(it) }
+            val resultIndex = model.predict(inputArray)
+            when (resultIndex) {
+                0 -> showResult("Koksidiosis (Coccidiosis)")
+                1 -> showResult("Sehat")
+                2 -> showResult("Tetelo (New Castle Disease)")
+                3 -> showResult("Salmonelosis (Salmonella)")
+            }
+
+        }
     }
 
-//    private fun showLoading(isLoading: Boolean) {
-//        binding.progressIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
-//    }
+    private fun showResult(diseaseName: String) {
+        Toast.makeText(this, "$diseaseName", Toast.LENGTH_SHORT).show()
+    }
+
 
 }
+
+
+

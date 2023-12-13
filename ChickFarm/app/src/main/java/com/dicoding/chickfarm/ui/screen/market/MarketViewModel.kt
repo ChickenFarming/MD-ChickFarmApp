@@ -1,7 +1,5 @@
 package com.dicoding.chickfarm.ui.screen.market
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.dicoding.chickfarm.Repository
 import com.dicoding.chickfarm.data.Produk
