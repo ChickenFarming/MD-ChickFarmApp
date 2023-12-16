@@ -20,7 +20,7 @@ import com.dicoding.chickfarm.R
 import com.dicoding.chickfarm.databinding.ActivityCameraBinding
 import com.dicoding.chickfarm.ui.screen.utils.Utils
 
-class CameraActivity : AppCompatActivity() {
+class CameraActivity : AppCompatActivity(){
     private lateinit var binding: ActivityCameraBinding
     private var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
@@ -118,7 +118,7 @@ class CameraActivity : AppCompatActivity() {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
             )
         }
-        supportActionBar?.hide()
+//        supportActionBar?.hide()
     }
 
     private val orientationEventListener by lazy {

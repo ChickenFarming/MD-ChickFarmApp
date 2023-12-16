@@ -1,11 +1,10 @@
 package com.dicoding.chickfarm.data
 
 data class Produk(
-    val id:Long,
-    val namaToko: String,
+    val idProduk: Int,
+    val stokProduk: Int,
+    val gambarProduk: String,
     val namaProduk: String,
-    val harga: String,
-    val image: Int,
-    val lokasi: String,
-    val desc : String,
+    val hargaProduk: Int,
+    val deskripsiProduk: String
 )

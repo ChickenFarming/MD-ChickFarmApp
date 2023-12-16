@@ -2,11 +2,22 @@ package com.dicoding.chickfarm.ui.screen.diseasedetector
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import java.io.InputStream
 
@@ -16,15 +27,14 @@ class TakeImageViewModel() : ViewModel(){
     fun init(context: Context) {
         this.context = context
     }
+
+
+
     fun allPermissionsGranted() =
         ContextCompat.checkSelfPermission(
             context,
             android.Manifest.permission.CAMERA
         ) == PackageManager.PERMISSION_GRANTED
-
-
-
-
 
 //    input gambar ke model ML
     fun uriToBitmap(contentResolver: ContentResolver, uri: Uri): Bitmap? {
@@ -65,7 +75,7 @@ class TakeImageViewModel() : ViewModel(){
         return inputArray
     }
 
-//    jika model ml tidak mengimplementasikan normalisasi
+//    Sintak lain untuk input gambar ke model
 //    fun bitmapToArray(bitmap: Bitmap): Array<Array<FloatArray>> {
 //        val height = bitmap.height
 //        val width = bitmap.width
@@ -74,16 +84,16 @@ class TakeImageViewModel() : ViewModel(){
 //
 //        // Normalize pixel values to be between 0 and 1
 //        val inputArray = Array(224) { Array(224) { FloatArray(3) } }
-////        for (y in 0 until height) {
-////            for (x in 0 until width) {
-////
-////                val pixelValue = pixels[y * width + x]
-////                inputArray[y][x][0] = ((pixelValue shr 16) and 0xFF) / 255.0f // Red channel
-////                inputArray[y][x][1] = ((pixelValue shr 8) and 0xFF) / 255.0f  // Green channel
-////                inputArray[y][x][2] = (pixelValue and 0xFF) / 255.0f         // Blue channel
-////
-////            }
-////        }
+//        for (y in 0 until height) {
+//            for (x in 0 until width) {
+//
+//                val pixelValue = pixels[y * width + x]
+//                inputArray[y][x][0] = ((pixelValue shr 16) and 0xFF) / 255.0f // Red channel
+//                inputArray[y][x][1] = ((pixelValue shr 8) and 0xFF) / 255.0f  // Green channel
+//                inputArray[y][x][2] = (pixelValue and 0xFF) / 255.0f         // Blue channel
+//
+//            }
+//        }
 //        return inputArray
 //    }
 

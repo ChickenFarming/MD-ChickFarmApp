@@ -3,9 +3,6 @@
     <string name="menu_home">Home</string>
     <string name="menu_camera">Camera</string>
     <string name="menu_market">Market</string>
-    <string name="menu">menu</string>
-    <string name="swipe_to_open">swipe to open</string>
-    <string name="swipe_to_close">swipe to close</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="riwayat_menu">Riwayat</string>
     <string name="maps_menu">Maps</string>
@@ -23,4 +20,24 @@
     <string name="menu_disease_detector">Disease Detector</string>
     <string name="deteksi_penyakit">Deteksi Penyakit</string>
     <string name="gallery_or_camera">Gunakan Kamera atau Gambar dari Galeri</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hasil_deteksi">Hasil Deteksi</string>
+
+    <string name="disease_1">"Koksidiosis (Coccidiosis)"</string>
+    <string name="disease_desc_1">"Gejala koksidiosis pada ayam meliputi diare berdarah, penurunan nafsu makan, kelemahan, dan penurunan produksi telur."</string>
+    <string name="disease_2">"Tetelo (New Castle Disease)"</string>
+    <string name="disease_desc_2">"Penyakit tetelo pada ayam disebabkan oleh virus Newcastle disease (NDV) yang menyebabkan gejala seperti gangguan pernapasan, pencernaan, dan saraf."</string>
+    <string name="disease_3">"Salmonelosis (Salmonella)"</string>
+    <string name="disease_desc_3">"Salmonella adalah bakteri yang dapat menyebabkan infeksi pada ayam dan dapat ditularkan kepada manusia melalui produk unggas terkontaminasi. Gejalanya meliputi diare dan penurunan produksi telur. Pencegahan melibatkan biosekuriti, sanitasi, dan memasak daging ayam dengan sempurna."</string>
+    <string name="healty">Sehat</string>
+    <string name="search_product">Cari Produk</string>
+    <string name="kotoran_ayam">Kotoran Ayam</string>
+    <string name="selamat_datang">Selamat Datang di</string>
+    <string name="lokasi_penjual">Lokasi Penjual Kebutuhan Ternak Ayam</string>
+    <string name="deteksi">Deteksi</string>
+    <string name="menu">Menu</string>
+    <string name="title_activity_splash_screen_activiy">SplashScreenActiviy</string>
 </resources>
+
+

@@ -52,15 +52,9 @@ class DiseaseDetector(context: Context, modelPath: String) {
         // Run inference
         interpreter.run(inputBuffer, outputBuffer)
         val predictionResult = outputBuffer[0]
-        // Mencari nilai maksimum
-        val value = predictionResult.maxOrNull() ?: -1.0f
-
 // Mencari indeks nilai maksimum
-        val index = predictionResult.indexOfFirst { it == value }
-        Log.d("Prediction", "Max Value: $value, Max Index: $index  Result: ${predictionResult.size}")
-
+        val index = predictionResult.indexOfFirst { it == predictionResult.maxOrNull() ?: -1.0f }
         for(i in 0 until 4){
-
         Log.d("index", "${predictionResult.get(i)}")
         }
         return index

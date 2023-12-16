@@ -2,14 +2,14 @@ package com.dicoding.chickfarm.ui
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
-import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Map
@@ -33,6 +33,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,12 +53,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.dicoding.chickfarm.AuthActivity
+import com.dicoding.chickfarm.ui.screen.auth.AuthActivity
 import com.dicoding.chickfarm.R
 import com.dicoding.chickfarm.navigation.NavigationItem
 import com.dicoding.chickfarm.navigation.Screen
-import com.dicoding.chickfarm.ui.screen.HomeScreen
 import com.dicoding.chickfarm.ui.screen.diseasedetector.DiseaseDetectorScreen
+import com.dicoding.chickfarm.ui.screen.home.HomeScreen
 import com.dicoding.chickfarm.ui.screen.map.MapScreen
 import com.dicoding.chickfarm.ui.screen.market.MarketScreen
 import com.dicoding.chickfarm.ui.screen.market.detail.DetailProductScreen
@@ -73,19 +74,23 @@ fun ChickFarmApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     context: Context,
+//    requestPermission: ActivityResultLauncher<String>,
+    navigateToMarket: MutableState<Boolean>,
+    searchValue:String?
+
+
 ) {
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+//    var _searchValue by remember { mutableStateOf("a") }
+
 
 //    Item untuk navigationDrawer
     val items = listOf(
-        MenuItem(
-            title = stringResource(R.string.riwayat_menu),
-            icon = Icons.Default.History
-        ),
         MenuItem(
             title = stringResource(R.string.maps_menu),
             icon = Icons.Default.Map
@@ -127,24 +132,24 @@ fun ChickFarmApp(
                                 }
                             },
 
-                        )
+                            )
                     }
 
                     Screen.DiseaseDetector.route, Screen.Market.route, Screen.Maps.route -> {
                         TopAppBar(
                             navigationIcon = {
-                                        IconButton(onClick = { }) {
-                                            Icon(
-                                                imageVector = Icons.Default.ArrowBackIos,
-                                                contentDescription = stringResource(R.string.back_button),
-                                            )
+                                IconButton(onClick = { }) {
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowBackIos,
+                                        contentDescription = stringResource(R.string.back_button),
+                                    )
 
-                                        }
+                                }
                             },
                             title = {
                                 when (currentRoute) {
                                     Screen.Maps.route -> Text(stringResource(id = R.string.maps_menu))
-                                    Screen.Market.route -> Text(stringResource(id = R.string.menu_market),)
+                                    Screen.Market.route -> Text(stringResource(id = R.string.menu_market))
                                     else -> {}
                                 }
                             },
@@ -162,8 +167,8 @@ fun ChickFarmApp(
             bottomBar = {
 //            if (currentRoute == Screen.Home.route || currentRoute == Screen.Camera.route || currentRoute == Screen.Market.route) {
 //                if (drawerState.isClosed) {
-                if (currentRoute != Screen.Maps.route) {
-                    BottomBar(navController, )
+                if (currentRoute != Screen.Maps.route && currentRoute != Screen.DetailProduct.route ) {
+                    BottomBar(navController)
 
                 }
 //                }
@@ -216,30 +221,58 @@ fun ChickFarmApp(
                         startDestination = Screen.Home.route,
 
                         ) {
+
+
                         composable(Screen.Home.route) {
-                            HomeScreen(
-                            )
+                                if (navigateToMarket.value) {
+                                    Log.d("searchValue", "ada")
+                                    navController.navigate(Screen.Market.route) {
+                                        // Pastikan tidak ada instruksi untuk menyimpan MarketScreen di dalam back stack
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        restoreState = true
+                                    }
+                                    navigateToMarket.value = false
+                                }
+                            else {
+
+                                HomeScreen(
+                                    //                                searchValue = searchValue,
+                                    //                                navigateToMarket = {navController.navigate(Screen.Market.route)},
+                                    navController = navController,
+                                    context = context,
+                                    navigateToMap = { navController.navigate(Screen.Maps.route) }
+                                )
+                            }
                         }
                         composable(Screen.DiseaseDetector.route) {
-                          DiseaseDetectorScreen(context = context, modifier)
+                            DiseaseDetectorScreen(
+                                context = context, modifier,
+                            )
                         }
 
                         composable(Screen.Market.route) {
 
-                            MarketScreen(navigateToPayment ={productId ->
-                                    navController.navigate(Screen.DetailProduct.createRoute(productId))
-                            } )
+
+                            MarketScreen(navigateToPayment = { productId ->
+                                navController.navigate(Screen.DetailProduct.createRoute(productId))
+                            },
+                                searchValue = searchValue,
+                                context = context
+                            )
 //                        MapsActivity()
                         }
-                        composable(route  = Screen.DetailProduct.route,
-                            arguments = listOf(navArgument("productId"){ type = NavType.LongType})
-                            ){
+                        composable(
+                            route = Screen.DetailProduct.route,
+                            arguments = listOf(navArgument("productId") { type = NavType.IntType })
+                        ) {
 
-                            val id = it.arguments?.getLong("productId") ?: -1L
+                            val id = it.arguments?.getInt("productId") ?: 1
                             DetailProductScreen(
-                                productId = id ,
-                               )
-
+                                productId = id,
+                                context = context
+                            )
 
 
                         }
@@ -292,7 +325,7 @@ fun MyTopBar(onMenuClick: () -> Unit, modifier: Modifier = Modifier) {
 @Preview
 @Composable
 fun MyTopBarPreview() {
-    MyTopBar(onMenuClick = {},)
+    MyTopBar(onMenuClick = {})
 }
 
 
@@ -313,8 +346,8 @@ private fun BottomBar(
                 screen = Screen.Home
             ),
             NavigationItem(
-                title = stringResource(R.string.menu_camera),
-                icon = Icons.Default.CameraAlt,
+                title = stringResource(R.string.deteksi),
+                icon = Icons.Default.Camera,
                 screen = Screen.DiseaseDetector
             ),
             NavigationItem(

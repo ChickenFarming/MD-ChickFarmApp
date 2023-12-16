@@ -6,31 +6,42 @@
     android:layout_height="match_parent"
     tools:context=".ui.screen.diseasedetector.TakeImageActivity">
 
+    <TextView
+        android:id="@+id/titlePopUp"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:textColor="@color/black"
+        android:textSize="28sp"
+        android:layout_marginTop="80dp"
+        android:textStyle="bold"
+        android:text="@string/kotoran_ayam"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/previewImageView"
+        />
     <ImageView
         android:id="@+id/previewImageView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="500dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:contentDescription="TODO"
         app:layout_constraintBottom_toTopOf="@+id/cameraXButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/kotoran" />
 
     <Button
         android:id="@+id/cameraXButton"
-        style="@style/RoundedButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/quantum_grey500"
         android:labelFor="@id/cameraXButton"
         android:padding="20dp"
+        android:backgroundTint="@color/black"
         android:text="@string/camera_x"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/detectionButton"
@@ -40,13 +51,12 @@
 
     <Button
         android:id="@+id/galleryButton"
-        style="@style/RoundedButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/quantum_grey500"
         android:padding="20dp"
+        android:backgroundTint="@color/black"
         android:scaleType="fitCenter"
         android:text="@string/gallery"
         android:textColor="@color/white"
@@ -56,19 +66,18 @@
 
     <Button
         android:id="@+id/detectionButton"
-        style="@style/RoundedButton"
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/quantum_grey500"
         android:padding="20dp"
+        android:backgroundTint="@color/brown"
         android:text="@string/deteksi_penyakit"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

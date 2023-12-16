@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners android:radius="12dp" /> <!-- Sesuaikan nilai radius sesuai keinginan -->
-    <solid android:color="@color/quantum_grey500" /> <!-- Ganti warna latar belakang sesuai keinginan -->
+    <corners android:radius="12dp" />
 </shape>

@@ -1,6 +1,5 @@
 package com.dicoding.chickfarm.navigation
 
-import android.net.Uri
 import androidx.compose.ui.graphics.vector.ImageVector
 
 data class NavigationItem(
@@ -12,11 +11,11 @@ data class NavigationItem(
 sealed class Screen(val route: String) {
 //    Main
     object Home : Screen("home")
-    object Camera : Screen("camera")
     object DiseaseDetector: Screen("disease")
+    object TakeImage:Screen("takeImage")
     object Market : Screen("market")
     object DetailProduct: Screen("market/{productId}"){
-        fun createRoute(productId: Long) = "market/$productId"
+        fun createRoute(productId: Int) = "market/$productId"
     }
 
 

@@ -19,9 +19,10 @@ import androidx.core.view.WindowCompat
 private val DarkColorScheme = darkColorScheme(
     primary = coklat,
     onPrimary = Color.White,
-    secondary = coklat2 ,
-    secondaryContainer = coklat2,
-    surface = darkGray
+    secondary = Color.DarkGray ,
+    secondaryContainer = Color.LightGray,
+    surface = darkGray,
+    onSecondaryContainer =Color.Black,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -30,8 +31,10 @@ private val LightColorScheme = lightColorScheme(
 //    secondaryContainer = hijau40,
 //    surface = gray40
     primary = coklat,
-    secondary = coklat2 ,
-    secondaryContainer = coklat2,
+    secondary = Color.White ,
+//    secondaryContainer = coklat2,
+    secondaryContainer = Color.Black,
+
     onSecondaryContainer =Color.White,
 //    onSurface = Color.White,
     surface = Color.White,

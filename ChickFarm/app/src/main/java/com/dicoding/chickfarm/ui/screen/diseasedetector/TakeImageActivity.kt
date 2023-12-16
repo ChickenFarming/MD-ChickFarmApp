@@ -3,17 +3,22 @@ package com.dicoding.chickfarm.ui.screen.diseasedetector
 import android.Manifest
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
+import com.dicoding.chickfarm.R
 import com.dicoding.chickfarm.databinding.ActivityTakeImageBinding
 import com.dicoding.chickfarm.modelML.DiseaseDetector
 import com.dicoding.chickfarm.ui.screen.diseasedetector.CameraActivity.Companion.CAMERAX_RESULT
+import com.dicoding.chickfarm.ui.screen.diseasedetector.result.ResultFragment
 
 class TakeImageActivity : AppCompatActivity() {
 
@@ -37,13 +42,15 @@ class TakeImageActivity : AppCompatActivity() {
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
+
         binding = ActivityTakeImageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.hide()
+//        supportActionBar?.hide()
 //      init model ML
-        model = DiseaseDetector(this, "model.tflite")
+        model = DiseaseDetector(this, "model_afika.tflite")
 
         takeImageViewModel = ViewModelProvider(this).get(TakeImageViewModel::class.java)
         takeImageViewModel.init(this)
@@ -75,6 +82,7 @@ class TakeImageActivity : AppCompatActivity() {
     ) { uri: Uri? ->
         if (uri != null) {
             currentImageUri = uri
+            Log.d("TakeImageActivity", "Image URI: $currentImageUri")
             showImage()
         } else {
             Log.d("Photo Picker", "No media selected")
@@ -91,6 +99,7 @@ class TakeImageActivity : AppCompatActivity() {
     ) {
         if (it.resultCode == CAMERAX_RESULT) {
             currentImageUri = it.data?.getStringExtra(CameraActivity.EXTRA_CAMERAX_IMAGE)?.toUri()
+            Log.d("TakeImageActivity", "CameraX Image URI: $currentImageUri")
             showImage()
         }
     }
@@ -98,7 +107,12 @@ class TakeImageActivity : AppCompatActivity() {
     private fun showImage() {
         currentImageUri?.let {
             Log.d("Image URI", "showImage: $it")
-            binding.previewImageView.setImageURI(it)
+            Glide.with(this)
+                .load(it)
+                .apply(RequestOptions().transform(RoundedCorners(100)))
+                .into( binding.previewImageView)
+
+//            binding.previewImageView.setImageURI(it)
         }
     }
 
@@ -112,17 +126,18 @@ class TakeImageActivity : AppCompatActivity() {
             val inputArray = resizedBitmap?.let { takeImageViewModel.bitmapToArray(it) }
             val resultIndex = model.predict(inputArray)
             when (resultIndex) {
-                0 -> showResult("Koksidiosis (Coccidiosis)")
-                1 -> showResult("Sehat")
-                2 -> showResult("Tetelo (New Castle Disease)")
-                3 -> showResult("Salmonelosis (Salmonella)")
+                0 -> showResult(getString(R.string.disease_1), getString(R.string.disease_desc_1))
+                1 -> showResult(getString(R.string.healty),"")
+                2 -> showResult(getString(R.string.disease_2),getString(R.string.disease_desc_2))
+                3 -> showResult(getString(R.string.disease_3),getString(R.string.disease_desc_3))
             }
 
         }
     }
 
-    private fun showResult(diseaseName: String) {
-        Toast.makeText(this, "$diseaseName", Toast.LENGTH_SHORT).show()
+    private fun showResult(diseaseName: String, desc:String) {
+        val resultFragment = ResultFragment.newInstance(diseaseName, desc)
+        resultFragment.show(supportFragmentManager, ResultFragment::class.java.simpleName)
     }
 
 

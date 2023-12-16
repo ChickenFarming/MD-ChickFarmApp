@@ -1,7 +1,9 @@
 package com.dicoding.chickfarm.ui.screen.market
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,8 +11,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,28 +31,62 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.dicoding.chickfarm.Repository
+import com.dicoding.chickfarm.data.Repository
 import com.dicoding.chickfarm.ViewModelFactory
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import coil.compose.AsyncImage
 import com.dicoding.chickfarm.R
+import com.dicoding.chickfarm.data.retrofit.ApiConfig
+
 
 @Composable
 fun MarketScreen(
     modifier: Modifier = Modifier,
-    navigateToPayment: (Long) -> Unit,
+    navigateToPayment: (Int) -> Unit,
+    searchValue:String?,
+    context: Context,
 ) {
-    val viewModel: MarketViewModel = viewModel(factory = ViewModelFactory(Repository()))
-
+    val viewModel: MarketViewModel = viewModel(factory = ViewModelFactory(Repository(ApiConfig().getApiService()),context))
+    var mutableSearchValue by remember { mutableStateOf(searchValue) }
     val groupedProduct by viewModel.groupedProduct.collectAsState()
+    val query by viewModel.query
+
+    if (mutableSearchValue != null ) {
+        viewModel.setQuery(mutableSearchValue.toString())
+        Toast.makeText(context, "Obat $searchValue", Toast.LENGTH_SHORT).show()
+        mutableSearchValue = null
+    }
+
+    Column(modifier = modifier) {
         val listState = rememberLazyListState()
-    Column(modifier = modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        MarketHeadline()
+        SearchProductBar(
+            query = query,
+            onQueryChange ={
+                   newQuery ->
+                viewModel.search(newQuery)
+            },
+            modifier = Modifier.padding(horizontal = 10.dp),
+            searchValue = searchValue
+        )
         LazyVerticalGrid(
             columns = GridCells.Adaptive(160.dp),
             contentPadding = PaddingValues(15.dp),
@@ -60,222 +98,170 @@ fun MarketScreen(
 
             groupedProduct.forEach { (init, data) ->
 
-                items(data, key = { it.id }) { data ->
-                    ProductListItem(
-                        namaProduct = data.namaProduk, image = data.image,
-                        productId = data.id, namaToko = data.namaToko, harga = data.harga,
-                        navigateToPayment = navigateToPayment, lokasi = data.lokasi
+                items(data, key = { it.idProduk }) { data ->
+                    ProductListItemGrid(
+                        namaProduct = data.namaProduk, image = data.gambarProduk,
+                        productId = data.idProduk, harga = data.hargaProduk,
+                        navigateToPayment = navigateToPayment
                     )
                 }
             }
         }
-//        }
 
-
-//        LazyColumn(
-//            modifier = Modifier
-//                .padding(top = 10.dp)
-//                .testTag("MusikList"), state = listState
-//        ) {
-//            groupedProduct.forEach { (init, data) ->
-//                items(data, key = { it.id }) { data ->
-//                    ProductListItem(
-//                        namaProduct = data.namaProduk, photoUrl = data.photoUrl,
-//                        productId = data.id, namaToko = data.namaToko, harga = data.harga,
-//                        navigateToPayment = navigateToPayment
-//                    )
-//                    Spacer(modifier = Modifier.height(10.dp))
-//                }
-//            }
-//
-        }
+    }
 
 
 }
 
+
+
 @Composable
-fun ProductListItem(
+fun ProductListItemGrid(
     modifier: Modifier = Modifier,
     namaProduct: String,
-    image: Int,
-//    navigateToDetail: (Long) -> Unit,
-    productId: Long,
-    namaToko: String,
-    harga: String,
-    lokasi:String,
-    navigateToPayment: (Long) -> Unit
+    image: String,
+    productId: Int,
+//    namaToko: String,
+    harga: Int,
+    navigateToPayment: (Int) -> Unit
 ) {
-
     Box(
         modifier = Modifier
-            .height(270.dp)
 //            .fillMaxWidth()
 //            .padding(horizontal = 10.dp)
-            .border(
-                width = 1.dp, // Lebar border
-                color = MaterialTheme.colorScheme.onBackground, // Warna border
-                shape = RoundedCornerShape(10.dp) // Bentuk sudut yang dibulatkan
-            )
-            .clip(RoundedCornerShape(15.dp))
+
+            .clip(RoundedCornerShape(5.dp))
 //            .clip(RoundedCornerShape(15.dp))
 //            .clip(RoundedCornerShape(15.dp)
 //            .background(MaterialTheme.colorScheme.surface)
             .clickable {
                 navigateToPayment(productId)
-            },
+            }
+            .background(Color.LightGray),
 
 
-    ) {
+        ) {
         Column(
             modifier = Modifier
-                .padding(10.dp)
                 .fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(){
-            Text(
-                text = namaToko,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleSmall.copy(
-                    fontWeight = FontWeight.Normal
-                )
-            )
-                Image(
-                    painter = painterResource(image),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
+                Box(
+                    modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.onBackground)){
+//                Text(
+//                    text = namaToko,
+//                    maxLines = 2,
+//                    overflow = TextOverflow.Ellipsis,
+//                    style = MaterialTheme.typography.titleSmall.copy(
+//                        fontWeight = FontWeight.Normal,
+//                        color = MaterialTheme.colorScheme.background
+//                    ),
+//                    modifier = modifier.padding(10.dp)
+//
+//                )
+                }
+            Column( modifier = Modifier
+                .padding(10.dp)) {
+                AsyncImage(model = image, contentDescription =null,
+                    contentScale =  ContentScale.Crop,
                     modifier = Modifier
-                        .size(170.dp)
-//                .clip(Shapes.medium)
+                        .padding(8.dp)
+                        .height(160.dp)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+
                 )
                 Text(
                     text = namaProduct,
                     style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.background
                     ),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 
             Row(
-              modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
+//                Text(
+//                    text = lokasi,
+//                    style = MaterialTheme.typography.titleSmall.copy(
+//                        fontWeight = FontWeight.Bold,
+//                        color = Color.Black
+//                    ),
+//                    modifier = modifier.padding(10.dp)
+//                )
                 Text(
-                    text = lokasi,
+                    text = harga.toString(),
                     style = MaterialTheme.typography.titleSmall.copy(
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Normal,
+                        color = Color.Black
                     ),
+                    modifier = modifier.padding(10.dp)
                 )
-                Text(
-                    text = harga,
-                    style = MaterialTheme.typography.titleSmall.copy(
-                        fontWeight = FontWeight.Normal
-                    ),
-                )
+
             }
         }
     }
-
-
-//    Row(
-//        verticalAlignment = Alignment.CenterVertically,
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(horizontal = 10.dp)
-//            .clip(RoundedCornerShape(15.dp))
-//            .background(MaterialTheme.colorScheme.surface)
-//            .clickable {
-//                navigateToPayment(productId)
-//            }
-//            .shadow(elevation = 1.dp)
-//
-//    ) {
-//        AsyncImage(
-//            model = photoUrl, contentDescription = null,
-//            contentScale = ContentScale.Crop,
-//            modifier = Modifier
-//                .padding(8.dp)
-//                .height(120.dp)
-//                .width(160.dp)
-//                .clip(RoundedCornerShape(16.dp))
-//
-//        )
-//        Column(
-//            modifier = Modifier.height(100.dp).fillMaxWidth().padding(start = 10.dp)
-//        ) {
-//
-//            Text(
-//                text = namaToko,
-//                fontWeight = FontWeight.Medium,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .weight(1f)
-//,                style = MaterialTheme.typography.bodyLarge.copy(
-//                    color = Color.Gray
-//                ),
-//            )
-//            Text(
-//                text = namaProduct,
-//                fontWeight = FontWeight.Medium,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .weight(1f)
-//,                style = MaterialTheme.typography.bodyLarge.copy(
-//                    color = Color.Gray
-//                ),
-//            )
-//            Text(
-//                text = harga,
-//                fontWeight = FontWeight.Medium,
-//                modifier = Modifier
-//                    .weight(1f),
-//                style = MaterialTheme.typography.bodyLarge.copy(
-//                    color = Color.Gray
-//                ),
-//            )
-//
-//        }
-//    }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MarketHeadline(
-    modifier: Modifier = Modifier
-){
-    Row(verticalAlignment = Alignment.CenterVertically,
+fun SearchProductBar(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+//    searchValue: MutableState<String?>
+    searchValue:String?
+) {
+
+    SearchBar(
+        query = query,
+        onQueryChange = onQueryChange,
+        onSearch = {},
+        active = false,
+        onActiveChange = {},
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.background
+            )
+        },
+        placeholder = {
+
+                   Text(
+                       text = stringResource(R.string.search_product),
+                       color = MaterialTheme.colorScheme.background
+                   )
+
+
+//            }
+        },
+        shape = MaterialTheme.shapes.large,
         modifier = modifier
-            .padding( vertical = 20.dp)
-            .width(270.dp),
-        horizontalArrangement = Arrangement.SpaceBetween) {
-        Column {
-            Text(
-                text = stringResource(id = R.string.kebutuhan_ternak_ayam),
-                style = MaterialTheme.typography.titleSmall.copy(
-                    fontWeight = FontWeight.Medium
-                ),
+            .padding(bottom = 10.dp)
+            .fillMaxWidth()
+            .heightIn(min = 48.dp),
+        colors = SearchBarDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.onBackground,
+            dividerColor = MaterialTheme.colorScheme.background,
+            inputFieldColors = TextFieldDefaults.textFieldColors(
+                MaterialTheme.colorScheme.background,
+                cursorColor = MaterialTheme.colorScheme.background
             )
-            Text(
-                text = stringResource(id = R.string.berkualitas),
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-            )
-            Text(
-                text = stringResource(id = R.string.terpercaya),
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-            )
-        }
-        Image(
-            painter = painterResource(R.drawable.market_image),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(120.dp)
-//                .clip(Shapes.medium)
+
+
         )
+
+    ) {
     }
 }
+
+
