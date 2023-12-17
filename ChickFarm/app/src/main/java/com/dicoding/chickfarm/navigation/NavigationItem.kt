@@ -12,11 +12,11 @@ sealed class Screen(val route: String) {
 //    Main
     object Home : Screen("home")
     object DiseaseDetector: Screen("disease")
-    object TakeImage:Screen("takeImage")
     object Market : Screen("market")
     object DetailProduct: Screen("market/{productId}"){
         fun createRoute(productId: Int) = "market/$productId"
     }
+    object Pesanan :Screen("pesanan")
 
 
 //Auth

@@ -9,6 +9,7 @@ import com.dicoding.chickfarm.di.Injection
 import com.dicoding.chickfarm.ui.screen.auth.AuthViewModel
 import com.dicoding.chickfarm.ui.screen.market.MarketViewModel
 import com.dicoding.chickfarm.ui.screen.market.detail.DetailProductViewModel
+import com.dicoding.chickfarm.ui.screen.market.pesanan.PesananViewModel
 
 class ViewModelFactory(private val repository: Repository,private val context: Context) :
     ViewModelProvider.NewInstanceFactory() {
@@ -19,10 +20,13 @@ class ViewModelFactory(private val repository: Repository,private val context: C
             return MarketViewModel(repository) as T
         }
         if (modelClass.isAssignableFrom(DetailProductViewModel::class.java)) {
-            return DetailProductViewModel(repository) as T
+            return DetailProductViewModel(repository, context) as T
         }
         if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {
             return AuthViewModel(repository, context) as T
+        }
+        if (modelClass.isAssignableFrom(PesananViewModel::class.java)) {
+            return PesananViewModel(repository) as T
         }
 
 

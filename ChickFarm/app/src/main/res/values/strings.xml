@@ -38,6 +38,8 @@
     <string name="deteksi">Deteksi</string>
     <string name="menu">Menu</string>
     <string name="title_activity_splash_screen_activiy">SplashScreenActiviy</string>
+    <string name="singup">Sign Up</string>
+    <string name="pesanan_menu">Pesanan Saya</string>
 </resources>
 
 

@@ -35,10 +35,13 @@ import java.util.concurrent.Executors
 
 object Utils {
 
-    fun setLoginStatus(context: Context, isLoggedIn: Boolean) {
+    fun setLoginStatus(context: Context, isLoggedIn: Boolean,idUser :Int?) {
         val sharedPreferences = context.getSharedPreferences("login_status", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putBoolean("is_logged_in", isLoggedIn)
+        if (idUser != null) {
+            editor.putInt("id_user", idUser)
+        }
         editor.apply()
     }
     private val FILENAME_FORMAT = "yyyyMMdd_HHmmss"

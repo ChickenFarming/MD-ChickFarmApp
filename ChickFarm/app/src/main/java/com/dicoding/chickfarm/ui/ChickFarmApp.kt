@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.ShoppingCartCheckout
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -62,6 +63,7 @@ import com.dicoding.chickfarm.ui.screen.home.HomeScreen
 import com.dicoding.chickfarm.ui.screen.map.MapScreen
 import com.dicoding.chickfarm.ui.screen.market.MarketScreen
 import com.dicoding.chickfarm.ui.screen.market.detail.DetailProductScreen
+import com.dicoding.chickfarm.ui.screen.market.pesanan.PesananScreen
 import com.dicoding.chickfarm.ui.screen.utils.Utils
 import kotlinx.coroutines.launch
 
@@ -91,6 +93,10 @@ fun ChickFarmApp(
 
 //    Item untuk navigationDrawer
     val items = listOf(
+        MenuItem(
+            title = stringResource(R.string.pesanan_menu),
+            icon = Icons.Default.ShoppingCartCheckout
+        ),
         MenuItem(
             title = stringResource(R.string.maps_menu),
             icon = Icons.Default.Map
@@ -135,21 +141,26 @@ fun ChickFarmApp(
                             )
                     }
 
-                    Screen.DiseaseDetector.route, Screen.Market.route, Screen.Maps.route -> {
+                    Screen.DiseaseDetector.route, Screen.Market.route, Screen.Maps.route, Screen.DetailProduct.route, Screen.Pesanan.route -> {
                         TopAppBar(
                             navigationIcon = {
-                                IconButton(onClick = { }) {
+                                if(currentRoute == Screen.Maps.route || currentRoute == Screen.DetailProduct.route || currentRoute == Screen.Pesanan.route){
+                                IconButton(onClick = {
+                                      navController.popBackStack()
+                                }) {
                                     Icon(
                                         imageVector = Icons.Default.ArrowBackIos,
                                         contentDescription = stringResource(R.string.back_button),
                                     )
 
                                 }
+                                }
                             },
                             title = {
                                 when (currentRoute) {
                                     Screen.Maps.route -> Text(stringResource(id = R.string.maps_menu))
                                     Screen.Market.route -> Text(stringResource(id = R.string.menu_market))
+                                    Screen.Pesanan.route -> Text(stringResource(id = R.string.pesanan_menu))
                                     else -> {}
                                 }
                             },
@@ -167,7 +178,7 @@ fun ChickFarmApp(
             bottomBar = {
 //            if (currentRoute == Screen.Home.route || currentRoute == Screen.Camera.route || currentRoute == Screen.Market.route) {
 //                if (drawerState.isClosed) {
-                if (currentRoute != Screen.Maps.route && currentRoute != Screen.DetailProduct.route ) {
+                if (currentRoute != Screen.Maps.route && currentRoute != Screen.DetailProduct.route && currentRoute != Screen.Pesanan.route) {
                     BottomBar(navController)
 
                 }
@@ -196,9 +207,10 @@ fun ChickFarmApp(
                                             intent.flags =
                                                 Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                             context.startActivity(intent)
-                                            Utils.setLoginStatus(context, false)
+                                            Utils.setLoginStatus(context, false, null)
 
                                         }
+                                        "Pesanan Saya" -> navController.navigate(Screen.Pesanan.route)
 
                                     }
 
@@ -208,7 +220,7 @@ fun ChickFarmApp(
                         }
                     }
                 },
-                gesturesEnabled = if (currentRoute == Screen.Maps.route) {
+                gesturesEnabled = if (currentRoute == Screen.Maps.route  || currentRoute == Screen.Pesanan.route) {
 //                Jika berada di Map maka Navigation Drawer tidak bisa dibuka dengan digeser
                     drawerState.isOpen
                 } else {
@@ -263,6 +275,7 @@ fun ChickFarmApp(
                             )
 //                        MapsActivity()
                         }
+
                         composable(
                             route = Screen.DetailProduct.route,
                             arguments = listOf(navArgument("productId") { type = NavType.IntType })
@@ -275,6 +288,16 @@ fun ChickFarmApp(
                             )
 
 
+                        }
+
+                        composable(Screen.Pesanan.route) {
+                            LaunchedEffect(drawerState.isOpen) {
+                                drawerState.close()
+                            }
+                            PesananScreen(
+                                context = context
+                            )
+//                        MapsActivity()
                         }
                         composable(Screen.Maps.route) {
                             LaunchedEffect(drawerState.isOpen) {

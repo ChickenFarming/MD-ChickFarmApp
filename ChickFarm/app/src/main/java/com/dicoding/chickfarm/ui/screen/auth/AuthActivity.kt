@@ -111,7 +111,7 @@ class AuthActivity : ComponentActivity() {
                     val intent = Intent(this@AuthActivity, MainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
-                    Utils.setLoginStatus(this@AuthActivity, true)
+                    Utils.setLoginStatus(this@AuthActivity, true, userMatched.idUser)
                     Toast.makeText(
                         this@AuthActivity,
                         "Selamat Datang ${userMatched.username}",
@@ -152,8 +152,8 @@ class AuthActivity : ComponentActivity() {
                     },
                     title = {
                         when (currentRoute) {
-                            Screen.Login.route -> Text(stringResource(id = R.string.login))
-                            else -> Text(stringResource(R.string.menu_market))
+                            Screen.Signup.route -> Text(stringResource(id = R.string.singup))
+                            else -> Text(stringResource(R.string.login))
                         }
                     },
                     colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.secondary)
