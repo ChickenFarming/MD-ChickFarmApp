@@ -44,7 +44,6 @@ class PesananViewModel(private val repository: Repository) : ViewModel() {
                     .groupBy { it.namaProduk[0] }
                 _groupedOrders.value = groupedOrders
             } catch (e: Exception) {
-                // Handle error, if any
                 e.printStackTrace()
             }
         }

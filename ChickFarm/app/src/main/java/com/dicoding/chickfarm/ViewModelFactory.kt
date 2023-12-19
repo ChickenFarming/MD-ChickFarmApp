@@ -43,15 +43,7 @@ class ViewModelFactory(private val repository: Repository,private val context: C
                     .also { INSTANCE = it }
             }
         }
-//        @JvmStatic
-//        fun getInstance(apiService: ApiService): ViewModelFactory {
-//            if (INSTANCE == null) {
-//                synchronized(ViewModelFactory::class.java) {
-//                    INSTANCE = ViewModelFactory(Injection.provideRepository( apiService),)
-//                }
-//            }
-//            return INSTANCE as ViewModelFactory
-//        }
+
     }
 
 }

@@ -15,13 +15,8 @@ import kotlinx.coroutines.launch
 
 class MarketViewModel(private val repository: Repository) : ViewModel() {
 
-//    private val _groupedProduct = MutableLiveData<Map<Char, List<Produk>>>()
 private val _groupedProduct = MutableStateFlow<Map<Char, List<Produk>>>(emptyMap())
-//    private val _groupedProduct = MutableStateFlow(
-//        repository.getAllProduct()
-//            .sortedBy { it.namaProduk }
-//            .groupBy { it.namaProduk[0] }
-//    )
+
     val groupedProduct: MutableStateFlow<Map<Char, List<Produk>>> get() = _groupedProduct
     init {
         loadGroupedProducts()
@@ -44,12 +39,7 @@ private val _groupedProduct = MutableStateFlow<Map<Char, List<Produk>>>(emptyMap
 
     private val _query = mutableStateOf("")
     val query: State<String> get() = _query
-//    fun search(newQuery: String) {
-//        _query.value = newQuery
-//        _groupedProduct.value = repository.searchProduct(_query.value)
-//            .sortedBy { it.namaProduk }
-//            .groupBy { it.namaProduk[0] }
-//    }
+
 
     fun search(newQuery: String) {
         viewModelScope.launch {
@@ -60,7 +50,6 @@ private val _groupedProduct = MutableStateFlow<Map<Char, List<Produk>>>(emptyMap
                     .groupBy { it.namaProduk[0] }
                 _groupedProduct.value = searchResult
             } catch (e: Exception) {
-                // Handle error, if any
                 e.printStackTrace()
             }
         }
@@ -75,29 +64,16 @@ private val _groupedProduct = MutableStateFlow<Map<Char, List<Produk>>>(emptyMap
                     .groupBy { it.namaProduk[0] }
                 _groupedProduct.value = searchResult
             } catch (e: Exception) {
-                // Handle error, if any
                 e.printStackTrace()
             }
         }
     }
 
 
-//    fun setQuery(searchValue:String){
-//        _query.value = searchValue
-//        _groupedProduct.value = repository.searchProduct(_query.value)
-//            .sortedBy { it.namaProduk }
-//            .groupBy { it.namaProduk[0] }
-//    }
 
-//    val searchValue = mutableStateOf("jajaja")
     private val _searchValue = MutableLiveData<String>()
     val searchValue: LiveData<String>
         get() = _searchValue
-//    fun setSearchValue(value :String){
-//        _searchValue.value = value
-//
-//        Log.d("hahahhaha", "${searchValue.value}")
-//    }
 
 
 }

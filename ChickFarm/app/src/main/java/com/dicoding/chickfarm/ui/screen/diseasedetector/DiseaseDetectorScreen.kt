@@ -28,7 +28,6 @@ import com.dicoding.chickfarm.R
 fun DiseaseDetectorScreen(
     context: Context,
     modifier: Modifier,
-//    navigateToTakeImage:() -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -50,7 +49,6 @@ fun DiseaseDetectorScreen(
             onClick = {
                 val intent = Intent(context, TakeImageActivity::class.java)
                 context.startActivity(intent)
-//                      navigateToTakeImage()
             },
             modifier = Modifier
                 .width(200.dp)

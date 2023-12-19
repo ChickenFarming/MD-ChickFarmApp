@@ -3,6 +3,7 @@ package com.dicoding.chickfarm.ui
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +17,8 @@ import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.ShoppingCartCheckout
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,13 +42,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -76,9 +83,8 @@ fun ChickFarmApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     context: Context,
-//    requestPermission: ActivityResultLauncher<String>,
     navigateToMarket: MutableState<Boolean>,
-    searchValue:String?
+    searchValue: String?
 
 
 ) {
@@ -88,7 +94,8 @@ fun ChickFarmApp(
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-//    var _searchValue by remember { mutableStateOf("a") }
+
+    var showLogoutDialog by remember { mutableStateOf(false) }
 
 
 //    Item untuk navigationDrawer
@@ -108,45 +115,34 @@ fun ChickFarmApp(
     )
     val selectedItem = remember { mutableStateOf(items[0]) }
 
-    val sharedPreferences =
-        LocalContext.current.getSharedPreferences("login_status", Context.MODE_PRIVATE)
-    val isLoggedIn =
-        remember { mutableStateOf(sharedPreferences.getBoolean("is_logged_in", false)) }
 
-    if (!isLoggedIn.value) {
-        // Jika sudah login, langsung arahkan ke MainActivity atau halaman setelah login
-        val intent = Intent(LocalContext.current, AuthActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        LocalContext.current.startActivity(intent)
-    } else {
+    Scaffold(
 
-        Scaffold(
+        topBar = {
 
-            topBar = {
+            when (currentRoute) {
+                Screen.Home.route -> {
 
-                when (currentRoute) {
-                    Screen.Home.route -> {
-
-                        MyTopBar(
-                            onMenuClick = {
-                                scope.launch {
-                                    if (drawerState.isClosed) {
-                                        drawerState.open()
-                                    } else {
-                                        drawerState.close()
-                                    }
+                    MyTopBar(
+                        onMenuClick = {
+                            scope.launch {
+                                if (drawerState.isClosed) {
+                                    drawerState.open()
+                                } else {
+                                    drawerState.close()
                                 }
-                            },
+                            }
+                        },
 
-                            )
-                    }
+                        )
+                }
 
-                    Screen.DiseaseDetector.route, Screen.Market.route, Screen.Maps.route, Screen.DetailProduct.route, Screen.Pesanan.route -> {
-                        TopAppBar(
-                            navigationIcon = {
-                                if(currentRoute == Screen.Maps.route || currentRoute == Screen.DetailProduct.route || currentRoute == Screen.Pesanan.route){
+                Screen.DiseaseDetector.route, Screen.Market.route, Screen.Maps.route, Screen.DetailProduct.route, Screen.Pesanan.route -> {
+                    TopAppBar(
+                        navigationIcon = {
+                            if (currentRoute == Screen.Maps.route || currentRoute == Screen.DetailProduct.route || currentRoute == Screen.Pesanan.route) {
                                 IconButton(onClick = {
-                                      navController.popBackStack()
+                                    navController.popBackStack()
                                 }) {
                                     Icon(
                                         imageVector = Icons.Default.ArrowBackIos,
@@ -154,165 +150,230 @@ fun ChickFarmApp(
                                     )
 
                                 }
+                            }
+                        },
+
+                        actions = {
+                            if (currentRoute == Screen.Market.route) {
+                                IconButton(onClick = { navController.navigate(Screen.Pesanan.route) }) {
+                                    Icon(
+                                        Icons.Default.ShoppingCart,
+                                        contentDescription = R.string.pesanan_menu.toString()
+                                    )
                                 }
-                            },
-                            title = {
-                                when (currentRoute) {
-                                    Screen.Maps.route -> Text(stringResource(id = R.string.maps_menu))
-                                    Screen.Market.route -> Text(stringResource(id = R.string.menu_market))
-                                    Screen.Pesanan.route -> Text(stringResource(id = R.string.pesanan_menu))
-                                    else -> {}
+                                IconButton(onClick = { navController.navigate(Screen.Maps.route) }) {
+                                    Icon(
+                                        Icons.Default.Map,
+                                        contentDescription = R.string.maps_menu.toString()
+                                    )
                                 }
+                            }
+                        },
+                        title = {
+                            when (currentRoute) {
+                                Screen.Maps.route -> Text(stringResource(id = R.string.maps_menu))
+                                Screen.Market.route -> Text(stringResource(id = R.string.menu_market))
+                                Screen.Pesanan.route -> Text(stringResource(id = R.string.pesanan_menu))
+                                else -> {}
+                            }
+                        },
+                        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+                    )
+                }
+                // Tambahkan kondisi lain jika diperlukan
+                else -> {
+                }
+            }
+
+
+        },
+        bottomBar = {
+            if (currentRoute != Screen.Maps.route && currentRoute != Screen.DetailProduct.route && currentRoute != Screen.Pesanan.route) {
+                BottomBar(navController)
+
+            }
+        },
+        modifier = modifier
+    ) { innerPadding ->
+        ModalNavigationDrawer(
+            modifier = modifier.padding(innerPadding),
+            drawerState = drawerState,
+            drawerContent = {
+                ModalDrawerSheet {
+                    Spacer(Modifier.height(12.dp))
+                    items.forEach { item ->
+                        NavigationDrawerItem(
+                            icon = { Icon(item.icon, contentDescription = null) },
+                            label = { Text(item.title) },
+                            selected = item == selectedItem.value,
+                            onClick = {
+                                selectedItem.value = item
+                                when (item.title) {
+                                    "Maps" -> navController.navigate(Screen.Maps.route)
+                                    "Logout" -> {
+                                        showLogoutDialog = true
+//
+                                    }
+
+                                    "Pesanan Saya" -> navController.navigate(Screen.Pesanan.route)
+
+                                }
+
                             },
-                            colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+                            modifier = Modifier.padding(horizontal = 12.dp)
                         )
                     }
-                    // Tambahkan kondisi lain jika diperlukan
-                    else -> {
-                        // Kondisi default jika tidak ada yang cocok
-                    }
                 }
 
-
-            },
-            bottomBar = {
-//            if (currentRoute == Screen.Home.route || currentRoute == Screen.Camera.route || currentRoute == Screen.Market.route) {
-//                if (drawerState.isClosed) {
-                if (currentRoute != Screen.Maps.route && currentRoute != Screen.DetailProduct.route && currentRoute != Screen.Pesanan.route) {
-                    BottomBar(navController)
-
-                }
-//                }
-//            }
-            },
-            modifier = modifier
-        ) { innerPadding ->
-            ModalNavigationDrawer(
-                modifier = modifier.padding(innerPadding),
-                drawerState = drawerState,
-                drawerContent = {
-                    ModalDrawerSheet {
-                        Spacer(Modifier.height(12.dp))
-                        items.forEach { item ->
-                            NavigationDrawerItem(
-                                icon = { Icon(item.icon, contentDescription = null) },
-                                label = { Text(item.title) },
-                                selected = item == selectedItem.value,
-                                onClick = {
-                                    selectedItem.value = item
-                                    when (item.title) {
-                                        "Maps" -> navController.navigate(Screen.Maps.route)
-                                        "Logout" -> {
-                                            val intent = Intent(context, AuthActivity::class.java)
-                                            intent.flags =
-                                                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                            context.startActivity(intent)
-                                            Utils.setLoginStatus(context, false, null)
-
-                                        }
-                                        "Pesanan Saya" -> navController.navigate(Screen.Pesanan.route)
-
-                                    }
-
-                                },
-                                modifier = Modifier.padding(horizontal = 12.dp)
+                if (showLogoutDialog) {
+                    AlertDialog(
+                        onDismissRequest = {
+                            // Menutup dialog ketika di luar dialog ditekan
+                            showLogoutDialog = false
+                        },
+                        title = {
+                            Text(
+                                text = "Logout",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center
                             )
-                        }
-                    }
-                },
-                gesturesEnabled = if (currentRoute == Screen.Maps.route  || currentRoute == Screen.Pesanan.route) {
-//                Jika berada di Map maka Navigation Drawer tidak bisa dibuka dengan digeser
-                    drawerState.isOpen
-                } else {
-                    drawerState.isOpen || drawerState.isClosed
-                },
-                content = {
+                        },
+                        text = {
+                            Column {
 
-                    NavHost(
-                        navController = navController,
-                        startDestination = Screen.Home.route,
-
-                        ) {
-
-
-                        composable(Screen.Home.route) {
-                                if (navigateToMarket.value) {
-                                    Log.d("searchValue", "ada")
-                                    navController.navigate(Screen.Market.route) {
-                                        // Pastikan tidak ada instruksi untuk menyimpan MarketScreen di dalam back stack
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        restoreState = true
-                                    }
-                                    navigateToMarket.value = false
-                                }
-                            else {
-
-                                HomeScreen(
-                                    //                                searchValue = searchValue,
-                                    //                                navigateToMarket = {navController.navigate(Screen.Market.route)},
-                                    navController = navController,
-                                    context = context,
-                                    navigateToMap = { navController.navigate(Screen.Maps.route) }
+                                Text(
+                                    text = "Anda yakin ingin keluar?",
+                                    modifier = Modifier.padding(5.dp),
+                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                        fontSize = 15.sp,
+                                    ),
                                 )
+                                Spacer(modifier = Modifier.height(15.dp))
+                                // TextFields untuk nama dan alamat
+
+                            }
+                        },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    val intent = Intent(context, AuthActivity::class.java)
+                                    intent.flags =
+                                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    context.startActivity(intent)
+                                    Utils.setLoginStatus(context, false, null)
+
+                                }
+                            ) {
+                                Text("Iya")
+                            }
+                        },
+                        dismissButton = {
+                            // Tombol untuk menutup dialog
+                            Button(
+                                onClick = {
+                                    showLogoutDialog = false
+                                }
+                            ) {
+                                Text("Tidak")
                             }
                         }
-                        composable(Screen.DiseaseDetector.route) {
-                            DiseaseDetectorScreen(
-                                context = context, modifier,
+                    )
+
+                }
+
+
+            },
+            gesturesEnabled = if (currentRoute == Screen.Maps.route || currentRoute == Screen.Pesanan.route) {
+//                Jika berada di Map maka Navigation Drawer tidak bisa dibuka dengan digeser
+                drawerState.isOpen
+            } else {
+                drawerState.isOpen || drawerState.isClosed
+            },
+            content = {
+
+                NavHost(
+                    navController = navController,
+                    startDestination = Screen.Home.route,
+
+                    ) {
+
+
+                    composable(Screen.Home.route) {
+                        if (navigateToMarket.value) {
+                            Log.d("searchValue", "ada")
+                            navController.navigate(Screen.Market.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                restoreState = true
+                            }
+                            navigateToMarket.value = false
+                        } else {
+
+                            HomeScreen(
+                                navController = navController,
+                                context = context,
+                                navigateToMap = { navController.navigate(Screen.Maps.route) }
                             )
                         }
+                    }
+                    composable(Screen.DiseaseDetector.route) {
+                        DiseaseDetectorScreen(
+                            context = context, modifier,
+                        )
+                    }
 
-                        composable(Screen.Market.route) {
+                    composable(Screen.Market.route) {
 
 
-                            MarketScreen(navigateToPayment = { productId ->
+                        MarketScreen(
+                            navigateToPayment = { productId ->
                                 navController.navigate(Screen.DetailProduct.createRoute(productId))
                             },
-                                searchValue = searchValue,
-                                context = context
-                            )
-//                        MapsActivity()
-                        }
+                            searchValue = searchValue,
+                            context = context
+                        )
+                    }
 
-                        composable(
-                            route = Screen.DetailProduct.route,
-                            arguments = listOf(navArgument("productId") { type = NavType.IntType })
-                        ) {
+                    composable(
+                        route = Screen.DetailProduct.route,
+                        arguments = listOf(navArgument("productId") { type = NavType.IntType })
+                    ) {
 
-                            val id = it.arguments?.getInt("productId") ?: 1
-                            DetailProductScreen(
-                                productId = id,
-                                context = context
-                            )
+                        val id = it.arguments?.getInt("productId") ?: 1
+                        DetailProductScreen(
+                            productId = id,
+                            context = context
+                        )
 
-
-                        }
-
-                        composable(Screen.Pesanan.route) {
-                            LaunchedEffect(drawerState.isOpen) {
-                                drawerState.close()
-                            }
-                            PesananScreen(
-                                context = context
-                            )
-//                        MapsActivity()
-                        }
-                        composable(Screen.Maps.route) {
-                            LaunchedEffect(drawerState.isOpen) {
-                                drawerState.close()
-                            }
-                            MapScreen(context = context)
-//                        MapsActivity()
-                        }
 
                     }
-                }
-            )
 
-        }
+                    composable(Screen.Pesanan.route) {
+                        LaunchedEffect(drawerState.isOpen) {
+                            drawerState.close()
+                        }
+                        PesananScreen(
+                            context = context
+                        )
+                    }
+                    composable(Screen.Maps.route) {
+                        LaunchedEffect(drawerState.isOpen) {
+                            drawerState.close()
+                        }
+                        MapScreen(context = context)
+                    }
+
+                }
+            }
+        )
+
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -355,7 +416,7 @@ fun MyTopBarPreview() {
 @Composable
 private fun BottomBar(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     NavigationBar(
         modifier = modifier,
@@ -402,3 +463,4 @@ private fun BottomBar(
         }
     }
 }
+

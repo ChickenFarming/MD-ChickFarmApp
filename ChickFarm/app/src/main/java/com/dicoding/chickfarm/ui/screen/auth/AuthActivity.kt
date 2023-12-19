@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +21,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -50,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -71,7 +70,6 @@ import com.dicoding.chickfarm.navigation.Screen
 import com.dicoding.chickfarm.ui.component.ButtonLarge
 import com.dicoding.chickfarm.ui.screen.utils.Utils
 import com.dicoding.chickfarm.ui.theme.ChickFarmTheme
-import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
@@ -140,49 +138,61 @@ class AuthActivity : ComponentActivity() {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
 
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    navigationIcon = {
-                        Icon(
-                            modifier = Modifier.padding(12.dp),
-                            imageVector = Icons.Default.Info,
-                            contentDescription = stringResource(R.string.app_name)
-                        )
-                    },
-                    title = {
-                        when (currentRoute) {
-                            Screen.Signup.route -> Text(stringResource(id = R.string.singup))
-                            else -> Text(stringResource(R.string.login))
-                        }
-                    },
-                    colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.secondary)
-                )
+        val sharedPreferences =
+            LocalContext.current.getSharedPreferences("login_status", Context.MODE_PRIVATE)
+        val isLoggedIn =
+            remember { mutableStateOf(sharedPreferences.getBoolean("is_logged_in", false)) }
 
-            },
-            modifier = modifier
-        ) { innerPadding ->
-            NavHost(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .background(MaterialTheme.colorScheme.secondary),
-                navController = navController,
-                startDestination = Screen.Login.route,
-            ) {
-                composable(Screen.Login.route) {
-                    LoginScreen(
-                        navController = navController,
-                        context = context,
-                        modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        if (isLoggedIn.value) {
+            // Jika sudah login, langsung arahkan ke MainActivity atau halaman setelah login
+            val intent = Intent(LocalContext.current, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            LocalContext.current.startActivity(intent)
+        }else{
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        navigationIcon = {
+                            Icon(
+                                modifier = Modifier.padding(12.dp),
+                                imageVector = Icons.Default.Info,
+                                contentDescription = stringResource(R.string.app_name)
+                            )
+                        },
+                        title = {
+                            when (currentRoute) {
+                                Screen.Signup.route -> Text(stringResource(id = R.string.singup))
+                                else -> Text(stringResource(R.string.login))
+                            }
+                        },
+                        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.secondary)
                     )
-//               LoginScreenTes()
+
+                },
+                modifier = modifier
+            ) { innerPadding ->
+                NavHost(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .background(MaterialTheme.colorScheme.secondary),
+                    navController = navController,
+                    startDestination = Screen.Login.route,
+                ) {
+                    composable(Screen.Login.route) {
+                        LoginScreen(
+                            navController = navController,
+                            context = context,
+                            modifier = Modifier.background(MaterialTheme.colorScheme.background)
+                        )
+                    }
+                    composable(Screen.Signup.route) {
+                        RegistrationScreen(navController = navController)
+                    }
+
                 }
-                composable(Screen.Signup.route) {
-                    RegistrationScreen(navController = navController)
-                }
+
 
             }
-
 
         }
 
@@ -197,8 +207,7 @@ class AuthActivity : ComponentActivity() {
         navController: NavHostController,
         context: Context,
     ) {
-//        val viewModel: LoginViewModel = viewModel(factory = ViewModelFactory(Repository(ApiConfig().getApiService())))
-//        val sharedPreferences = context.getSharedPreferences("login_status", Context.MODE_PRIVATE)
+
         var email by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
         var isPasswordVisible by remember { mutableStateOf(false) }
@@ -262,12 +271,6 @@ class AuthActivity : ComponentActivity() {
                         imeAction = ImeAction.Done,
                         keyboardType = KeyboardType.Password
                     ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-
-                        }
-                    ),
-
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
@@ -391,19 +394,15 @@ class AuthActivity : ComponentActivity() {
                         .padding(8.dp),
                     contentDescription = null
                 )
+
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
                     label = { Text("Password") },
                     visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Done,
-                        keyboardType = KeyboardType.Password
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-
-                        }
                     ),
 
                     modifier = Modifier
@@ -448,7 +447,7 @@ class AuthActivity : ComponentActivity() {
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(Color.Black)
             ) {
-                Text("Login")
+                Text("Sign Up")
             }
             Spacer(modifier = Modifier.height(16.dp))
 

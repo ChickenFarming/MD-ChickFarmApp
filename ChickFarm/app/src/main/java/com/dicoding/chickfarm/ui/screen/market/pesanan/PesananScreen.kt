@@ -19,13 +19,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,10 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -53,12 +48,6 @@ import com.dicoding.chickfarm.data.Produk
 import com.dicoding.chickfarm.data.Repository
 import com.dicoding.chickfarm.data.retrofit.ApiConfig
 import com.dicoding.chickfarm.di.Injection
-import com.dicoding.chickfarm.ui.screen.market.MarketViewModel
-import com.dicoding.chickfarm.ui.screen.market.ProductListItemGrid
-import com.dicoding.chickfarm.ui.screen.market.SearchProductBar
-import com.dicoding.chickfarm.ui.screen.market.detail.DetailProductViewModel
-import kotlinx.coroutines.launch
-import java.nio.file.WatchEvent
 
 @Composable
 fun PesananScreen(
@@ -75,9 +64,10 @@ fun PesananScreen(
     val groupedOrders by viewModel.groupedOrders.collectAsState()
     val refreshScreen by viewModel.refreshScreen.collectAsState()
 
-    Column(modifier = modifier.fillMaxSize(),
+    Column(
+        modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+    ) {
 
         LaunchedEffect(refreshScreen) {
             if (refreshScreen) {
@@ -85,10 +75,12 @@ fun PesananScreen(
                 viewModel.onScreenRefreshed()
             }
         }
-        if(groupedOrders.isEmpty()){
-            Box(modifier = modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center){
-            Text(text = "Pesanan Kosong!!")
+        if (groupedOrders.isEmpty()) {
+            Box(
+                modifier = modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Pesanan Kosong!!")
             }
         }
         LazyVerticalGrid(
@@ -97,12 +89,11 @@ fun PesananScreen(
             horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalArrangement = Arrangement.spacedBy(15.dp),
             modifier = Modifier.fillMaxWidth()
-//            modifier = modifier.testTag("RewardList")
         ) {
-           
+
             groupedOrders.forEach { (init, data) ->
                 items(data, key = { it.idPesanan }) { data ->
-                    
+
                     OrdersListItemGrid(
                         productId = data.idProduk,
                         namaPenerima = data.namaPenerima,
@@ -123,15 +114,13 @@ fun PesananScreen(
 
 @Composable
 fun OrdersListItemGrid(
-    orderId :Int,
+    orderId: Int,
     modifier: Modifier = Modifier,
     productId: Int,
     namaPenerima: String,
     alamat: String,
     metodePembayaran: String,
     context: Context
-//    harga: Int,
-//    navigateToPayment: (Int) -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
     var productState by remember { mutableStateOf<List<Produk>>(emptyList()) }
@@ -161,7 +150,7 @@ fun OrdersListItemGrid(
             .clickable {
                 showDialog = true
             }
-            .background(Color.LightGray),
+            .background(MaterialTheme.colorScheme.surface),
 
 
         ) {
@@ -170,12 +159,6 @@ fun OrdersListItemGrid(
                 .fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Box(
-                modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.onBackground)
-            ) {
-            }
             Column(
                 modifier = Modifier
                     .padding(10.dp)
@@ -196,7 +179,7 @@ fun OrdersListItemGrid(
                         text = data.namaProduk,
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.background
+                            color = MaterialTheme.colorScheme.onBackground
                         ),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
@@ -206,7 +189,7 @@ fun OrdersListItemGrid(
                         text = "Rp. ${data.hargaProduk}",
                         style = MaterialTheme.typography.titleSmall.copy(
                             fontWeight = FontWeight.Normal,
-                            color = Color.Black
+                            color = MaterialTheme.colorScheme.onBackground
                         ),
                         modifier = modifier.padding(10.dp)
                     )
@@ -221,10 +204,12 @@ fun OrdersListItemGrid(
                             title = {
 
 
-                                Text(text = "Pesanan",
+                                Text(
+                                    text = "Pesanan",
                                     style = MaterialTheme.typography.bodyLarge.copy(
                                         fontSize = 20.sp,
-                                        fontWeight = FontWeight.Bold),
+                                        fontWeight = FontWeight.Bold
+                                    ),
                                     modifier = Modifier.fillMaxWidth(),
                                     textAlign = TextAlign.Center
                                 )
@@ -260,7 +245,7 @@ fun OrdersListItemGrid(
                                         ),
                                     )
                                     Text(
-                                        text ="Metode Pembayaran: $metodePembayaran",
+                                        text = "Metode Pembayaran: $metodePembayaran",
                                         modifier = Modifier.padding(5.dp),
                                         style = MaterialTheme.typography.bodyLarge.copy(
                                             fontSize = 15.sp,
@@ -270,40 +255,50 @@ fun OrdersListItemGrid(
                                 }
                             },
                             confirmButton = {
-                                Column(modifier = Modifier.fillMaxWidth(),
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
                                     horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-
-                                Row() {
-
-                                Button( modifier = modifier.width(100.dp),
-                                    onClick = {
-                                        showDialog = false
-                                    }
                                 ) {
-                                    Text("Batal",
-                                        style = MaterialTheme.typography.bodyLarge.copy(
-                                            fontSize = 15.sp))
-                                }
-                                    Spacer(modifier = Modifier.width(20.dp))
-                                Button(modifier = modifier.width(100.dp),
-                                    onClick = {
-                                        showDialog = false
-                                        viewModel.hapusPesanan(idPesanan = orderId)
-                                        Toast.makeText(context, "Pesanan Dihapus", Toast.LENGTH_SHORT ).show()
+
+                                    Row() {
+
+                                        Button(modifier = modifier.width(100.dp),
+                                            onClick = {
+                                                showDialog = false
+                                            }
+                                        ) {
+                                            Text(
+                                                "Batal",
+                                                style = MaterialTheme.typography.bodyLarge.copy(
+                                                    fontSize = 15.sp
+                                                )
+                                            )
+                                        }
+                                        Spacer(modifier = Modifier.width(20.dp))
+                                        Button(modifier = modifier.width(100.dp),
+                                            onClick = {
+                                                showDialog = false
+                                                viewModel.hapusPesanan(idPesanan = orderId)
+                                                Toast.makeText(
+                                                    context,
+                                                    "Pesanan Dihapus",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        ) {
+                                            Text(
+                                                "Hapus",
+                                                style = MaterialTheme.typography.bodyLarge.copy(
+                                                    fontSize = 15.sp,
+                                                )
+                                            )
+                                        }
                                     }
-                                ) {
-                                    Text("Hapus",
-                                        style = MaterialTheme.typography.bodyLarge.copy(
-                                            fontSize = 15.sp,
-                                        ))
-                                }
-                                }
                                 }
                             },
 
 
-                        )
+                            )
 
                     }
 

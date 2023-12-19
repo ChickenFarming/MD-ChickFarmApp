@@ -2,7 +2,6 @@ package com.dicoding.chickfarm.ui.screen.market
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,13 +10,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -41,16 +37,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
@@ -62,26 +54,22 @@ import com.dicoding.chickfarm.data.retrofit.ApiConfig
 fun MarketScreen(
     modifier: Modifier = Modifier,
     navigateToPayment: (Int) -> Unit,
-    searchValue:String?,
+    searchValue: String?,
     context: Context,
 ) {
-    val viewModel: MarketViewModel = viewModel(factory = ViewModelFactory(Repository(ApiConfig().getApiService()),context))
+    val viewModel: MarketViewModel =
+        viewModel(factory = ViewModelFactory(Repository(ApiConfig().getApiService()), context))
     var mutableSearchValue by remember { mutableStateOf(searchValue) }
     val groupedProduct by viewModel.groupedProduct.collectAsState()
     val query by viewModel.query
 
-    if (mutableSearchValue != null ) {
-        viewModel.setQuery(mutableSearchValue.toString())
-        Toast.makeText(context, "Obat $searchValue", Toast.LENGTH_SHORT).show()
-        mutableSearchValue = null
-    }
 
     Column(modifier = modifier) {
         val listState = rememberLazyListState()
         SearchProductBar(
             query = query,
-            onQueryChange ={
-                   newQuery ->
+            onQueryChange = { newQuery ->
+                mutableSearchValue = null
                 viewModel.search(newQuery)
             },
             modifier = Modifier.padding(horizontal = 10.dp),
@@ -93,7 +81,6 @@ fun MarketScreen(
             horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalArrangement = Arrangement.spacedBy(15.dp),
             modifier = Modifier.fillMaxWidth()
-//            modifier = modifier.testTag("RewardList")
         ) {
 
             groupedProduct.forEach { (init, data) ->
@@ -109,10 +96,14 @@ fun MarketScreen(
         }
 
     }
-
+    LaunchedEffect(mutableSearchValue) {
+        if (mutableSearchValue != null) {
+            viewModel.setQuery(mutableSearchValue.toString())
+            Toast.makeText(context, "Obat $searchValue", Toast.LENGTH_SHORT).show()
+        }
+    }
 
 }
-
 
 
 @Composable
@@ -121,63 +112,40 @@ fun ProductListItemGrid(
     namaProduct: String,
     image: String,
     productId: Int,
-//    namaToko: String,
     harga: Int,
     navigateToPayment: (Int) -> Unit
 ) {
     Box(
         modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(horizontal = 10.dp)
-
             .clip(RoundedCornerShape(5.dp))
-//            .clip(RoundedCornerShape(15.dp))
-//            .clip(RoundedCornerShape(15.dp)
-//            .background(MaterialTheme.colorScheme.surface)
             .clickable {
                 navigateToPayment(productId)
             }
-            .background(Color.LightGray),
-
-
-        ) {
+            .background(MaterialTheme.colorScheme.surface),
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-                Box(
-                    modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.onBackground)){
-//                Text(
-//                    text = namaToko,
-//                    maxLines = 2,
-//                    overflow = TextOverflow.Ellipsis,
-//                    style = MaterialTheme.typography.titleSmall.copy(
-//                        fontWeight = FontWeight.Normal,
-//                        color = MaterialTheme.colorScheme.background
-//                    ),
-//                    modifier = modifier.padding(10.dp)
-//
-//                )
-                }
-            Column( modifier = Modifier
-                .padding(10.dp)) {
-                AsyncImage(model = image, contentDescription =null,
-                    contentScale =  ContentScale.Crop,
+            Column(
+                modifier = Modifier
+                    .padding(10.dp)
+            ) {
+                AsyncImage(
+                    model = image, contentDescription = null,
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .padding(8.dp)
                         .height(160.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-
                 )
                 Text(
                     text = namaProduct,
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.background
+                        color = MaterialTheme.colorScheme.onBackground
                     ),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
@@ -189,19 +157,11 @@ fun ProductListItemGrid(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
-//                Text(
-//                    text = lokasi,
-//                    style = MaterialTheme.typography.titleSmall.copy(
-//                        fontWeight = FontWeight.Bold,
-//                        color = Color.Black
-//                    ),
-//                    modifier = modifier.padding(10.dp)
-//                )
                 Text(
-                    text = harga.toString(),
+                    text = "Rp. ${harga.toString()}",
                     style = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.Normal,
-                        color = Color.Black
+                        color = MaterialTheme.colorScheme.onBackground
                     ),
                     modifier = modifier.padding(10.dp)
                 )
@@ -217,10 +177,8 @@ fun SearchProductBar(
     query: String,
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-//    searchValue: MutableState<String?>
-    searchValue:String?
+    searchValue: String?
 ) {
-
     SearchBar(
         query = query,
         onQueryChange = onQueryChange,
@@ -236,13 +194,10 @@ fun SearchProductBar(
         },
         placeholder = {
 
-                   Text(
-                       text = stringResource(R.string.search_product),
-                       color = MaterialTheme.colorScheme.background
-                   )
-
-
-//            }
+            Text(
+                text = stringResource(R.string.search_product),
+                color = MaterialTheme.colorScheme.background
+            )
         },
         shape = MaterialTheme.shapes.large,
         modifier = modifier
@@ -256,10 +211,7 @@ fun SearchProductBar(
                 MaterialTheme.colorScheme.background,
                 cursorColor = MaterialTheme.colorScheme.background
             )
-
-
         )
-
     ) {
     }
 }

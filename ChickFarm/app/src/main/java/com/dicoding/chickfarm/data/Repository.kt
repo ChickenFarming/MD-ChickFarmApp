@@ -1,6 +1,5 @@
 package com.dicoding.chickfarm.data
 
-import android.util.Log
 import com.dicoding.chickfarm.data.response.AkunUserResponse
 import com.dicoding.chickfarm.data.response.DataItem
 import com.dicoding.chickfarm.data.response.DataPesanan
@@ -27,6 +26,8 @@ class Repository(
         return getAllProduct().filter { it.idProduk == productId }
     }
 
+
+
     suspend fun searchProduct(query: String): List<Produk> {
         return getAllProduct().filter {
             it.namaProduk.contains(query, ignoreCase = true)
@@ -35,9 +36,7 @@ class Repository(
     }
 
 
-//    Api
 
-//    Auth
 suspend fun getAllUsers(): AkunUserResponse {
     return apiService.getAllUsers()
 }
@@ -83,7 +82,6 @@ suspend fun insertUser(email: String, username: String, password: String): AkunU
             val response = apiService.getAllOrders()
             response.data?.mapNotNull { it?.toPesanan() } ?: emptyList()
         } catch (e: Exception) {
-            // Handle error sesuai kebutuhan aplikasi Anda
             emptyList()
         }
     }

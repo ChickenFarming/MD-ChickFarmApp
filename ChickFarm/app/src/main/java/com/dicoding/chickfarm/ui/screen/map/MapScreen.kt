@@ -48,9 +48,6 @@ fun MapScreen(
                 viewModel.startLocationUpdates()
             }
 
-            else -> {
-                // Izin ditolak, berikan pesan atau ambil tindakan yang sesuai
-            }
         }
     }
 

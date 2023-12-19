@@ -40,6 +40,9 @@
     <string name="title_activity_splash_screen_activiy">SplashScreenActiviy</string>
     <string name="singup">Sign Up</string>
     <string name="pesanan_menu">Pesanan Saya</string>
+    <string name="kembali">Kembali</string>
+    <string name="cari_obat">Cari Obat</string>
+    <string name="batal">Batal</string>
 </resources>
 
 

@@ -33,17 +33,7 @@
             android:text="@string/disease_1"
             android:layout_below="@+id/titlePopUp"
             android:layout_marginTop="40dp"
-            />
-        <TextView
-            android:id="@+id/desc"
-            android:text="@string/disease_desc_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/gray"
-            android:textSize="15sp"
-            android:layout_below="@+id/resultTextView"
-            android:layout_marginTop="10dp"
-
+            android:layout_centerHorizontal="true"
             />
 
         <Button
@@ -51,24 +41,12 @@
             android:layout_marginTop="50dp"
             android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:text="@string/batal"
+            android:text="@string/kembali"
             android:backgroundTint="@color/gray"
             android:textColor="@color/white"
-            android:layout_below="@+id/desc"
-            android:layout_alignParentStart="true"
-
+            android:layout_below="@+id/resultTextView"
+            android:layout_centerHorizontal="true"
             />
 
-        <Button
-            android:id="@+id/cariObatBtn"
-            android:layout_width="110dp"
-            android:layout_marginTop="50dp"
-            android:layout_height="wrap_content"
-            android:text="@string/cari_obat"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/brown"
-            android:layout_below="@+id/desc"
-            android:layout_alignParentEnd="true"
-            />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

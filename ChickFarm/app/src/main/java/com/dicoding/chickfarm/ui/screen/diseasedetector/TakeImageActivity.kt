@@ -18,6 +18,7 @@ import com.dicoding.chickfarm.R
 import com.dicoding.chickfarm.databinding.ActivityTakeImageBinding
 import com.dicoding.chickfarm.modelML.DiseaseDetector
 import com.dicoding.chickfarm.ui.screen.diseasedetector.CameraActivity.Companion.CAMERAX_RESULT
+import com.dicoding.chickfarm.ui.screen.diseasedetector.result.HealtyResultFragment
 import com.dicoding.chickfarm.ui.screen.diseasedetector.result.ResultFragment
 
 class TakeImageActivity : AppCompatActivity() {
@@ -48,7 +49,6 @@ class TakeImageActivity : AppCompatActivity() {
         binding = ActivityTakeImageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        supportActionBar?.hide()
 //      init model ML
         model = DiseaseDetector(this, "model_afika.tflite")
 
@@ -112,7 +112,6 @@ class TakeImageActivity : AppCompatActivity() {
                 .apply(RequestOptions().transform(RoundedCorners(100)))
                 .into( binding.previewImageView)
 
-//            binding.previewImageView.setImageURI(it)
         }
     }
 
@@ -125,9 +124,18 @@ class TakeImageActivity : AppCompatActivity() {
             // Konversi Bitmap ke array dengan dimensi (224, 224, 3)
             val inputArray = resizedBitmap?.let { takeImageViewModel.bitmapToArray(it) }
             val resultIndex = model.predict(inputArray)
+
+//            urutan class ouput 1
+//            when (resultIndex) {
+//                3 -> showResult(getString(R.string.disease_1), getString(R.string.disease_desc_1))
+//                0 -> showHealtyResult(getString(R.string.healty))
+//                1 -> showResult(getString(R.string.disease_2),getString(R.string.disease_desc_2))
+//                2 -> showResult(getString(R.string.disease_3),getString(R.string.disease_desc_3))
+//            }
+//            class ouput lainnya
             when (resultIndex) {
                 0 -> showResult(getString(R.string.disease_1), getString(R.string.disease_desc_1))
-                1 -> showResult(getString(R.string.healty),"")
+                1 -> showHealtyResult(getString(R.string.healty))
                 2 -> showResult(getString(R.string.disease_2),getString(R.string.disease_desc_2))
                 3 -> showResult(getString(R.string.disease_3),getString(R.string.disease_desc_3))
             }
@@ -137,6 +145,11 @@ class TakeImageActivity : AppCompatActivity() {
 
     private fun showResult(diseaseName: String, desc:String) {
         val resultFragment = ResultFragment.newInstance(diseaseName, desc)
+        resultFragment.show(supportFragmentManager, ResultFragment::class.java.simpleName)
+    }
+
+    private fun showHealtyResult(text : String){
+        val resultFragment = HealtyResultFragment.newInstance(text)
         resultFragment.show(supportFragmentManager, ResultFragment::class.java.simpleName)
     }
 

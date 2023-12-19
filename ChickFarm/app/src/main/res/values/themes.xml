@@ -2,6 +2,8 @@
 <resources>
 
     <style name="Theme.ChickFarm" parent="android:Theme.Material.Light.NoActionBar">
+
+
     </style>
 
     <style name="Theme.ChickFarm.TakeImageActivity" parent="Theme.AppCompat.DayNight.NoActionBar">

@@ -60,7 +60,6 @@ class ResultFragment : DialogFragment() {
         }
         binding.cariObatBtn.setOnClickListener {
             val searchValue = binding.resultTextView.text.toString()
-//            marketViewModel.setSearchValue(searchValue.split(" ").firstOrNull().toString())
 
             val intent = Intent(activity, MainActivity::class.java)
             intent.putExtra("searchValue", searchValue.split(" ").firstOrNull().toString() )

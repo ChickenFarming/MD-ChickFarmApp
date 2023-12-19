@@ -54,6 +54,7 @@ class TakeImageViewModel() : ViewModel(){
         return Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, true)
     }
 
+//    sintak
     fun bitmapToArray(bitmap: Bitmap): Array<Array<FloatArray>> {
         val height = bitmap.height
         val width = bitmap.width
@@ -75,7 +76,7 @@ class TakeImageViewModel() : ViewModel(){
         return inputArray
     }
 
-//    Sintak lain untuk input gambar ke model
+//    Sintak lain untuk input gambar ke model yang belum tidak ada normalisasi
 //    fun bitmapToArray(bitmap: Bitmap): Array<Array<FloatArray>> {
 //        val height = bitmap.height
 //        val width = bitmap.width

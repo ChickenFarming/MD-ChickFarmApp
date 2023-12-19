@@ -1,8 +1,8 @@
 package com.dicoding.chickfarm.data.response
 
 data class AkunUserResponse(
-	val data: List<DataItem?>? = null,
-	val message: String? = null
+    val data: List<DataItem?>? = null,
+    var message: String? = null
 )
 
 data class DataItem(
