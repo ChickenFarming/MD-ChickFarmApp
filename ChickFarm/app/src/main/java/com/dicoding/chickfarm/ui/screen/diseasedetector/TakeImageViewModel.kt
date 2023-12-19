@@ -76,28 +76,6 @@ class TakeImageViewModel() : ViewModel(){
         return inputArray
     }
 
-//    Sintak lain untuk input gambar ke model yang belum tidak ada normalisasi
-//    fun bitmapToArray(bitmap: Bitmap): Array<Array<FloatArray>> {
-//        val height = bitmap.height
-//        val width = bitmap.width
-//        val pixels = IntArray(224 * 224)
-//        bitmap.getPixels(pixels, 0, 224, 0, 0, 224, 224)
-//
-//        // Normalize pixel values to be between 0 and 1
-//        val inputArray = Array(224) { Array(224) { FloatArray(3) } }
-//        for (y in 0 until height) {
-//            for (x in 0 until width) {
-//
-//                val pixelValue = pixels[y * width + x]
-//                inputArray[y][x][0] = ((pixelValue shr 16) and 0xFF) / 255.0f // Red channel
-//                inputArray[y][x][1] = ((pixelValue shr 8) and 0xFF) / 255.0f  // Green channel
-//                inputArray[y][x][2] = (pixelValue and 0xFF) / 255.0f         // Blue channel
-//
-//            }
-//        }
-//        return inputArray
-//    }
-
 
 
 }

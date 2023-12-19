@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -42,7 +43,6 @@ import com.dicoding.chickfarm.data.retrofit.ApiConfig
 import com.dicoding.chickfarm.di.Injection
 import kotlinx.coroutines.launch
 
-import androidx.lifecycle.lifecycleScope
 
 @Composable
 fun DetailProductScreen(
@@ -253,7 +253,7 @@ fun DetailContent(
             },
             dismissButton = {
                 // Tombol untuk menutup dialog
-                Button(
+                Button(colors = ButtonDefaults.buttonColors(Color.Black),
                     onClick = {
                         showDialog = false
                     }

@@ -23,7 +23,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.dicoding.chickfarm.MainActivity
 import com.dicoding.chickfarm.R
 import com.dicoding.chickfarm.ui.screen.auth.AuthActivity
 import com.dicoding.chickfarm.ui.theme.ChickFarmTheme

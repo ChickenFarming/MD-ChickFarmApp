@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,15 +64,13 @@ fun MarketScreen(
 
 
     Column(modifier = modifier) {
-        val listState = rememberLazyListState()
         SearchProductBar(
             query = query,
             onQueryChange = { newQuery ->
-                mutableSearchValue = null
                 viewModel.search(newQuery)
             },
             modifier = Modifier.padding(horizontal = 10.dp),
-            searchValue = searchValue
+//            searchValue = searchValue
         )
         LazyVerticalGrid(
             columns = GridCells.Adaptive(160.dp),
@@ -83,16 +80,18 @@ fun MarketScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
 
-            groupedProduct.forEach { (init, data) ->
 
-                items(data, key = { it.idProduk }) { data ->
-                    ProductListItemGrid(
-                        namaProduct = data.namaProduk, image = data.gambarProduk,
-                        productId = data.idProduk, harga = data.hargaProduk,
-                        navigateToPayment = navigateToPayment
-                    )
+                groupedProduct.forEach { (init, data) ->
+
+                    items(data, key = { it.idProduk }) { data ->
+                        ProductListItemGrid(
+                            namaProduct = data.namaProduk, image = data.gambarProduk,
+                            productId = data.idProduk, harga = data.hargaProduk,
+                            navigateToPayment = navigateToPayment
+                        )
+                    }
                 }
-            }
+//
         }
 
     }
@@ -177,7 +176,7 @@ fun SearchProductBar(
     query: String,
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    searchValue: String?
+//    searchValue: String?
 ) {
     SearchBar(
         query = query,

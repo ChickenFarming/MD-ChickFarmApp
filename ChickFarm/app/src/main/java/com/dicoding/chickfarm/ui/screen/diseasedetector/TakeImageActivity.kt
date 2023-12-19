@@ -50,7 +50,7 @@ class TakeImageActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 //      init model ML
-        model = DiseaseDetector(this, "model_afika.tflite")
+        model = DiseaseDetector(this, "model.tflite")
 
         takeImageViewModel = ViewModelProvider(this).get(TakeImageViewModel::class.java)
         takeImageViewModel.init(this)
@@ -125,14 +125,6 @@ class TakeImageActivity : AppCompatActivity() {
             val inputArray = resizedBitmap?.let { takeImageViewModel.bitmapToArray(it) }
             val resultIndex = model.predict(inputArray)
 
-//            urutan class ouput 1
-//            when (resultIndex) {
-//                3 -> showResult(getString(R.string.disease_1), getString(R.string.disease_desc_1))
-//                0 -> showHealtyResult(getString(R.string.healty))
-//                1 -> showResult(getString(R.string.disease_2),getString(R.string.disease_desc_2))
-//                2 -> showResult(getString(R.string.disease_3),getString(R.string.disease_desc_3))
-//            }
-//            class ouput lainnya
             when (resultIndex) {
                 0 -> showResult(getString(R.string.disease_1), getString(R.string.disease_desc_1))
                 1 -> showHealtyResult(getString(R.string.healty))

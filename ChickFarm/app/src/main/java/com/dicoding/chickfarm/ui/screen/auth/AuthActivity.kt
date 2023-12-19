@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -238,19 +239,19 @@ class AuthActivity : ComponentActivity() {
                     modifier = Modifier.padding(8.dp),
                     contentDescription = null
                 )
-
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
                     label = { Text("Email") },
                     modifier = Modifier
+                        .fillMaxWidth()
                         .padding(8.dp),
                     shape = RoundedCornerShape(26.dp),
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Next // Set action button to "Next"
+                        imeAction = ImeAction.Next, // Set action button to "Next"
+                        keyboardType = KeyboardType.Email
                     ),
-
-                    )
+                )
             }
 
             Row(
@@ -262,15 +263,17 @@ class AuthActivity : ComponentActivity() {
                         .padding(8.dp),
                     contentDescription = null
                 )
+
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
                     label = { Text("Password") },
                     visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Done,
-                        keyboardType = KeyboardType.Password
                     ),
+
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
@@ -344,7 +347,7 @@ class AuthActivity : ComponentActivity() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    Icons.Default.Email,
+                    Icons.Default.Person,
                     modifier = Modifier.padding(8.dp),
                     contentDescription = null
                 )
