@@ -86,7 +86,7 @@ class MapViewModel() : ViewModel() {
     }
 
     fun setUserLocation(location: LatLng) {
-        userLocation.value = location
+        userLocation.value =location
     }
 
     fun moveCameraToLocation(location: LatLng) {
