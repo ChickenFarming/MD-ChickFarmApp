@@ -25,9 +25,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.dicoding.chickfarm.data.Repository
-import com.dicoding.chickfarm.ViewModelFactory
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -36,41 +33,32 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import com.dicoding.chickfarm.R
-import com.dicoding.chickfarm.data.retrofit.ApiConfig
 
 
 @Composable
 fun MarketScreen(
     modifier: Modifier = Modifier,
     navigateToPayment: (Int) -> Unit,
-    searchValue: String?,
     context: Context,
+    marketViewModel: MarketViewModel
 ) {
-    val viewModel: MarketViewModel =
-        viewModel(factory = ViewModelFactory(Repository(ApiConfig().getApiService()), context))
-    var mutableSearchValue by remember { mutableStateOf(searchValue) }
-    val groupedProduct by viewModel.groupedProduct.collectAsState()
-    val query by viewModel.query
-
+    val groupedProduct by marketViewModel.groupedProduct.collectAsState()
+    val query by marketViewModel.query
+    val searchValue by marketViewModel.searchValue
 
     Column(modifier = modifier) {
         SearchProductBar(
             query = query,
             onQueryChange = { newQuery ->
-                viewModel.search(newQuery)
+                marketViewModel.search(newQuery)
             },
             modifier = Modifier.padding(horizontal = 10.dp),
-//            searchValue = searchValue
         )
         LazyVerticalGrid(
             columns = GridCells.Adaptive(160.dp),
@@ -81,27 +69,25 @@ fun MarketScreen(
         ) {
 
 
-                groupedProduct.forEach { (init, data) ->
+            groupedProduct.forEach { (init, data) ->
 
-                    items(data, key = { it.idProduk }) { data ->
-                        ProductListItemGrid(
-                            namaProduct = data.namaProduk, image = data.gambarProduk,
-                            productId = data.idProduk, harga = data.hargaProduk,
-                            navigateToPayment = navigateToPayment
-                        )
-                    }
+                items(data, key = { it.idProduk }) { data ->
+                    ProductListItemGrid(
+                        namaProduct = data.namaProduk, image = data.gambarProduk,
+                        productId = data.idProduk, harga = data.hargaProduk,
+                        navigateToPayment = navigateToPayment
+                    )
                 }
+            }
 //
         }
 
     }
-    LaunchedEffect(mutableSearchValue) {
-        if (mutableSearchValue != null) {
-            viewModel.setQuery(mutableSearchValue.toString())
-            Toast.makeText(context, "Obat $searchValue", Toast.LENGTH_SHORT).show()
-        }
+    if (searchValue!= "") {
+        marketViewModel.setQuery(searchValue)
+        Toast.makeText(context, "Obat $searchValue", Toast.LENGTH_SHORT).show()
+        marketViewModel.setSearhValue("")
     }
-
 }
 
 

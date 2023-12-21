@@ -1,7 +1,9 @@
 package com.dicoding.chickfarm.ui.screen.market
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dicoding.chickfarm.data.Repository
@@ -11,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class MarketViewModel(private val repository: Repository) : ViewModel() {
 
-private val _groupedProduct = MutableStateFlow<Map<Char, List<Produk>>>(emptyMap())
+    private val _groupedProduct = MutableStateFlow<Map<Char, List<Produk>>>(emptyMap())
 
     val groupedProduct: MutableStateFlow<Map<Char, List<Produk>>> get() = _groupedProduct
     init {
@@ -63,8 +65,14 @@ private val _groupedProduct = MutableStateFlow<Map<Char, List<Produk>>>(emptyMap
                 e.printStackTrace()
             }
         }
+
+        Log.d("gadgawg", searchValue)
+
     }
-
-
+    private val _searchValue = mutableStateOf("")
+    val searchValue: State<String> get() = _searchValue
+    fun setSearhValue(searchValue: String){
+        _searchValue.value = searchValue
+    }
 
 }

@@ -2,7 +2,6 @@ package com.dicoding.chickfarm.ui
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -53,6 +52,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -63,12 +63,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.dicoding.chickfarm.ui.screen.auth.AuthActivity
 import com.dicoding.chickfarm.R
+import com.dicoding.chickfarm.ViewModelFactory
+import com.dicoding.chickfarm.data.Repository
+import com.dicoding.chickfarm.data.retrofit.ApiConfig
 import com.dicoding.chickfarm.navigation.NavigationItem
 import com.dicoding.chickfarm.navigation.Screen
 import com.dicoding.chickfarm.ui.screen.diseasedetector.DiseaseDetectorScreen
 import com.dicoding.chickfarm.ui.screen.home.HomeScreen
 import com.dicoding.chickfarm.ui.screen.map.MapScreen
 import com.dicoding.chickfarm.ui.screen.market.MarketScreen
+import com.dicoding.chickfarm.ui.screen.market.MarketViewModel
 import com.dicoding.chickfarm.ui.screen.market.detail.DetailProductScreen
 import com.dicoding.chickfarm.ui.screen.market.pesanan.PesananScreen
 import com.dicoding.chickfarm.ui.screen.utils.Utils
@@ -88,7 +92,8 @@ fun ChickFarmApp(
 
 
 ) {
-
+    val marketViewModel: MarketViewModel =
+        viewModel(factory = ViewModelFactory(Repository(ApiConfig().getApiService()), context))
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -304,7 +309,7 @@ fun ChickFarmApp(
 
                     composable(Screen.Home.route) {
                         if (navigateToMarket.value) {
-                            Log.d("searchValue", "ada")
+                            marketViewModel.setSearhValue(searchValue = searchValue.toString())
                             navController.navigate(Screen.Market.route) {
                                 popUpTo(navController.graph.findStartDestination().id) {
                                     saveState = true
@@ -313,6 +318,7 @@ fun ChickFarmApp(
                             }
                             navigateToMarket.value = false
                         } else {
+                            marketViewModel.setQuery("")
 
                             HomeScreen(
                                 navController = navController,
@@ -322,20 +328,20 @@ fun ChickFarmApp(
                         }
                     }
                     composable(Screen.DiseaseDetector.route) {
+                        marketViewModel.setQuery("")
+
                         DiseaseDetectorScreen(
                             context = context, modifier,
                         )
                     }
 
                     composable(Screen.Market.route) {
-
-
                         MarketScreen(
                             navigateToPayment = { productId ->
                                 navController.navigate(Screen.DetailProduct.createRoute(productId))
                             },
-                            searchValue = searchValue,
-                            context = context
+                            context = context,
+                            marketViewModel = marketViewModel
                         )
                     }
 
